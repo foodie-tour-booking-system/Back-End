@@ -72,4 +72,13 @@ public class TourServiceImpl implements TourService {
         tour = tourRepository.save(tour);
         return tourMapper.toResponse(tour);
     }
+
+    @Override
+    public void deleteTour(Long tourId) {
+        Tour tour = tourRepository.findById(tourId)
+                .orElseThrow(() -> new ResourceNotFoundException("Tour không tồn tại"));
+        tour.setTourStatus(TourStatus.DELETED);
+        tourRepository.save(tour);
+
+    }
 }

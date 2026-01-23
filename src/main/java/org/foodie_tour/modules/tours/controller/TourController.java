@@ -48,4 +48,12 @@ public class TourController {
         TourResponse response = tourService.updateTour(tourId, tourRequest);
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("{tourId}")
+    public ResponseEntity<String> deleteTour(
+            @PathVariable Long tourId
+    ) {
+        tourService.deleteTour(tourId);
+        return ResponseEntity.ok("Xóa tour thành công");
+    }
 }
