@@ -11,4 +11,5 @@ public interface TourService {
     List<TourResponse> getAllTours(TourStatus tourStatus);
     TourResponse getTourById(Long tourId);
     TourResponse updateTour(Long tourId, TourRequest tourRequest);
+    void deleteTour(Long tourId);
 }
