@@ -10,4 +10,5 @@ public interface TourService {
     TourResponse createTour(TourRequest tourRequest);
     List<TourResponse> getAllTours(TourStatus tourStatus);
     TourResponse getTourById(Long tourId);
+    TourResponse updateTour(Long tourId, TourRequest tourRequest);
 }
