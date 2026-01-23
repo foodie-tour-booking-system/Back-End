@@ -3,6 +3,7 @@ package org.foodie_tour.modules.tours.service.Impl;
 import lombok.RequiredArgsConstructor;
 import org.foodie_tour.common.exception.DuplicateResourceException;
 import org.foodie_tour.common.exception.InvalidateDataException;
+import org.foodie_tour.common.exception.ResourceNotFoundException;
 import org.foodie_tour.modules.tours.dto.request.TourRequest;
 import org.foodie_tour.modules.tours.dto.response.TourResponse;
 import org.foodie_tour.modules.tours.entity.Tour;
@@ -50,5 +51,13 @@ public class TourServiceImpl implements TourService {
         return tours.stream()
                 .map(tourMapper::toResponse)
                 .toList();
+    }
+
+    @Override
+    public TourResponse getTourById(Long tourId) {
+        Tour tour = tourRepository.findById(tourId)
+                .orElseThrow(() -> new ResourceNotFoundException("Tour không tồn tại"));
+
+        return tourMapper.toResponse(tour);
     }
 }
