@@ -11,6 +11,10 @@ import org.foodie_tour.modules.tours.enums.TourStatus;
 import org.foodie_tour.modules.tours.mapper.TourMapper;
 import org.foodie_tour.modules.tours.repository.TourRepository;
 import org.foodie_tour.modules.tours.service.TourService;
+import org.foodie_tour.modules.tours.specification.TourSpecifications;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,5 +84,14 @@ public class TourServiceImpl implements TourService {
         tour.setTourStatus(TourStatus.DELETED);
         tourRepository.save(tour);
 
+    }
+
+    @Override
+    public Page<TourResponse> searchTours(String name, TourStatus status, Long minPrice, Long maxPrice, Pageable pageable) {
+        Specification<Tour> spec = Specification.where(TourSpecifications.hasName(name))
+                .and(TourSpecifications.hasStatus(status))
+                .and(TourSpecifications.priceBetween(minPrice, maxPrice));
+        return tourRepository.findAll(spec, pageable)
+                .map(tourMapper::toResponse);
     }
 }
