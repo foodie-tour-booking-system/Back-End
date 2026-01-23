@@ -6,6 +6,10 @@ import org.foodie_tour.modules.tours.dto.request.TourRequest;
 import org.foodie_tour.modules.tours.dto.response.TourResponse;
 import org.foodie_tour.modules.tours.enums.TourStatus;
 import org.foodie_tour.modules.tours.service.TourService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -55,5 +59,16 @@ public class TourController {
     ) {
         tourService.deleteTour(tourId);
         return ResponseEntity.ok("Xóa tour thành công");
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<TourResponse>> searchTour(
+            @RequestParam(required = false) String tourName,
+            @RequestParam(required = false) TourStatus status,
+            @RequestParam(required = false) Long minPrice,
+            @RequestParam(required = false) Long maxPrice,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return ResponseEntity.ok(tourService.searchTours(tourName, status, minPrice, maxPrice, pageable));
     }
 }
