@@ -1,5 +1,6 @@
 package org.foodie_tour.modules.routes.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +16,12 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "routes")
+@Table(name = "routes"
+        , indexes = {
+        @Index(name = "idx_route_name", columnList = "route_name"),
+        @Index(name = "idx_tour_id", columnList = "tour_id")
+}
+)
 public class Route {
 
     @Id
@@ -31,13 +37,14 @@ public class Route {
     private RouteStatus routeStatus;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tour_id")
+    @JsonIgnore
     private Tour tour;
 
     @OneToMany(mappedBy = "route", fetch = FetchType.LAZY)

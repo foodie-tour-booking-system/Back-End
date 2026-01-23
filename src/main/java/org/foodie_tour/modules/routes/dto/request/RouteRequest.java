@@ -10,5 +10,5 @@ public class RouteRequest {
     private String routeName;
     private RouteStatus routeStatus;
     private Long tourId;
-    private List<RouteDetailRequest> details;
+    private List<RouteDetailRequest> routeDetails;
 }

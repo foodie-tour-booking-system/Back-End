@@ -1,5 +1,6 @@
 package org.foodie_tour.modules.routes.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,10 +37,11 @@ public class RouteDetail {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "updatedd_at")
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "route_id")
+    @JsonIgnore
     private Route route;
 }
