@@ -23,4 +23,5 @@ public class TourResponse {
     private TourType tourType;
     private TourStatus tourStatus;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

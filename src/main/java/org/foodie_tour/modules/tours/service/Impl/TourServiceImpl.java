@@ -14,6 +14,7 @@ import org.foodie_tour.modules.tours.service.TourService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -58,6 +59,17 @@ public class TourServiceImpl implements TourService {
         Tour tour = tourRepository.findById(tourId)
                 .orElseThrow(() -> new ResourceNotFoundException("Tour không tồn tại"));
 
+        return tourMapper.toResponse(tour);
+    }
+
+    @Override
+    public TourResponse updateTour(Long tourId, TourRequest tourRequest) {
+        Tour tour = tourRepository.findById(tourId)
+                .orElseThrow(() -> new ResourceNotFoundException("Tour không tồn tại"));
+
+        tourMapper.updateEntity(tourRequest, tour);
+        tour.setUpdatedAt(LocalDateTime.now());
+        tour = tourRepository.save(tour);
         return tourMapper.toResponse(tour);
     }
 }
