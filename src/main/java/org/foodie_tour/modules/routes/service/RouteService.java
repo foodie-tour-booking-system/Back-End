@@ -10,4 +10,5 @@ import java.util.List;
 public interface RouteService {
     RouteResponse createRoute(RouteRequest routeRequest);
     List<RouteResponse> getAllRoutes(RouteStatus routeStatus);
+    RouteResponse updateRouteById(Long routeId, RouteRequest routeRequest);
 }

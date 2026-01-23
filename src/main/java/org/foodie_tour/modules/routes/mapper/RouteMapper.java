@@ -8,6 +8,7 @@ import org.foodie_tour.modules.tours.dto.request.TourRequest;
 import org.foodie_tour.modules.tours.entity.Tour;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface RouteMapper {
@@ -20,4 +21,9 @@ public interface RouteMapper {
 
     @Mapping(target = "tourId", source = "tour.tourId")
     RouteResponse toResponse(Route route);
+
+    @Mapping(target = "routeId", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "routeDetails", ignore = true)
+    void updateEntity(RouteRequest routeRequest, @MappingTarget Route route);
 }

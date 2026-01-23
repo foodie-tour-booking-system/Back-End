@@ -34,4 +34,13 @@ public class RouteController {
         List<RouteResponse> response = routeService.getAllRoutes(routeStatus);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @PutMapping("{id}")
+    public ResponseEntity<RouteResponse> updateRoute(
+            @PathVariable Long id,
+            @RequestBody @Valid RouteRequest routeRequest
+    ) {
+        RouteResponse response = routeService.updateRouteById(id, routeRequest);
+        return ResponseEntity.ok(response);
+    }
 }
