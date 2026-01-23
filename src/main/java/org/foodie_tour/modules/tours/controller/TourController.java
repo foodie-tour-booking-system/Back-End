@@ -30,4 +30,13 @@ public class TourController {
         List<TourResponse> tours = tourService.getAllTours(status);
         return ResponseEntity.status(HttpStatus.OK).body(tours);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TourResponse> getTourById(
+            @RequestParam("id")
+            @PathVariable Long id
+    ) {
+        TourResponse response = tourService.getTourById(id);
+        return ResponseEntity.ok(response);
+    }
 }
