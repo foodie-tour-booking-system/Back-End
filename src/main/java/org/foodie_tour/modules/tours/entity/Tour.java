@@ -16,7 +16,9 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "tours")
+@Table(name = "tours", indexes = {
+        @Index(name = "idx_tour_status", columnList = "tour_status")
+})
 public class Tour {
 
     @Id

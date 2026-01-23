@@ -18,12 +18,6 @@ public interface RouteMapper {
     @Mapping(target = "routeDetails", source = "routeDetails")
     Route toEntity(RouteRequest routeRequest);
 
-    @Mapping(target = "routeDetailId", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "route", ignore = true)
-    @Mapping(target = "routeDetailStatus", constant = "ACTIVE")
-    RouteDetail toDetailEntity(RouteDetail routeDetailRequest);
-
     @Mapping(target = "tourId", source = "tour.tourId")
     RouteResponse toResponse(Route route);
 }
