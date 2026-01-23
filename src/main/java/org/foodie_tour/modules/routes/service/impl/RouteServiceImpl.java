@@ -66,4 +66,27 @@ public class RouteServiceImpl implements RouteService {
                 .map(routeMapper::toResponse)
                 .toList();
     }
+
+    @Override
+    public RouteResponse updateRouteById(Long routeId, RouteRequest routeRequest) {
+        Route route = routeRepository.findById(routeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Tuyến đường không tồn tại"));
+
+        Tour tour = tourRepository.findById(routeRequest.getTourId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Tour không tồn tại"));
+
+
+        routeMapper.updateEntity(routeRequest, route);
+        route.setUpdatedAt(LocalDateTime.now());
+        route.setTour(tour);
+
+        if (route.getRouteDetails() != null) {
+            route.getRouteDetails().forEach(routeDetail -> {
+                routeDetail.setRoute(route);
+                routeDetail.setUpdatedAt(LocalDateTime.now());
+            });
+        }
+        routeRepository.save(route);
+        return routeMapper.toResponse(route);
+    }
 }
