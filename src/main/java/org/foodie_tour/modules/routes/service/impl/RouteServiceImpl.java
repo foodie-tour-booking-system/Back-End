@@ -7,6 +7,7 @@ import org.foodie_tour.common.exception.ResourceNotFoundException;
 import org.foodie_tour.modules.routes.dto.request.RouteRequest;
 import org.foodie_tour.modules.routes.dto.response.RouteResponse;
 import org.foodie_tour.modules.routes.entity.Route;
+import org.foodie_tour.modules.routes.enums.RouteStatus;
 import org.foodie_tour.modules.routes.mapper.RouteMapper;
 import org.foodie_tour.modules.routes.repository.RouteDetailRepository;
 import org.foodie_tour.modules.routes.repository.RouteRepository;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -49,5 +51,19 @@ public class RouteServiceImpl implements RouteService {
         }
         routeRepository.save(route);
         return routeMapper.toResponse(route);
+    }
+
+    @Override
+    public List<RouteResponse> getAllRoutes(RouteStatus routeStatus) {
+        List<Route> routes;
+        if (routeStatus != null) {
+            routes = routeRepository.findRouteByRouteStatus(routeStatus);
+        } else {
+            routes = routeRepository.findAll();
+        }
+
+        return routes.stream()
+                .map(routeMapper::toResponse)
+                .toList();
     }
 }
