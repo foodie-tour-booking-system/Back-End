@@ -66,4 +66,23 @@ public class DishServiceImpl implements DishService {
         }
         return dishMapper.toResponse(dish);
     }
+
+    @Override
+    public DishResponse updateDish(Long dishId, DishRequest dishRequest) {
+        Dish dish = dishRepository.findById(dishId)
+                .orElseThrow(() -> new ResourceNotFoundException("Món ăn không tồn tại"));
+
+        dishMapper.updateEntity(dishRequest, dish);
+        dish.setUpdatedAt(LocalDateTime.now());
+        dish = dishRepository.save(dish);
+        return dishMapper.toResponse(dish);
+    }
+
+    @Override
+    public void deleteDish(Long dishId) {
+        Dish dish = dishRepository.findById(dishId)
+                .orElseThrow(() -> new ResourceNotFoundException("Món ăn không tồn tại"));
+        dish.setDishStatus(DishStatus.INACTIVE);
+        dishRepository.save(dish);
+    }
 }
