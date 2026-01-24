@@ -2,6 +2,7 @@ package org.foodie_tour.modules.routes.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.foodie_tour.modules.routes.dto.request.RouteRequest;
 import org.foodie_tour.modules.routes.dto.response.RouteResponse;
 import org.foodie_tour.modules.routes.entity.Route;
@@ -32,6 +33,13 @@ public class RouteController {
             @RequestParam(required = false) RouteStatus routeStatus
             ) {
         List<RouteResponse> response = routeService.getAllRoutes(routeStatus);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<RouteResponse> getRouteById(@PathVariable Long id,
+                                                      @RequestParam(required = false) RouteStatus routeStatus) {
+        RouteResponse response = routeService.getRouteById(id, routeStatus);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

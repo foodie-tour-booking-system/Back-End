@@ -68,6 +68,18 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
+    public RouteResponse getRouteById(Long routeId, RouteStatus routeStatus) {
+        Route route = routeRepository.findById(routeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Tuyến đường không tồn tại"));
+
+        if (routeStatus != null && !route.getRouteStatus().equals(routeStatus)) {
+            throw new ResourceNotFoundException("Tuyến đường không tồn tại với trạng thái");
+        }
+
+        return routeMapper.toResponse(route);
+    }
+
+    @Override
     public RouteResponse updateRouteById(Long routeId, RouteRequest routeRequest) {
         Route route = routeRepository.findById(routeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Tuyến đường không tồn tại"));
