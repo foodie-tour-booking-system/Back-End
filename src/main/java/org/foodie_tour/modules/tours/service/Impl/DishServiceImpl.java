@@ -43,6 +43,7 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<DishResponse> getAllDishes(DishStatus dishStatus) {
         List<Dish> dishes;
         if (dishStatus != null) {
@@ -68,6 +69,7 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
+    @Transactional
     public DishResponse updateDish(Long dishId, DishRequest dishRequest) {
         Dish dish = dishRepository.findById(dishId)
                 .orElseThrow(() -> new ResourceNotFoundException("Món ăn không tồn tại"));
