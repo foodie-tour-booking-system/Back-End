@@ -55,4 +55,15 @@ public class DishServiceImpl implements DishService {
                 .map(dishMapper::toResponse)
                 .toList();
     }
+
+    @Override
+    public DishResponse getDishById(Long dishId, DishStatus dishStatus) {
+        Dish dish = dishRepository.findById(dishId)
+                .orElseThrow(() -> new ResourceNotFoundException("Món ăn không tồn tại"));
+
+        if (dishStatus != null && !dish.getDishStatus().equals(dishStatus)) {
+            throw new ResourceNotFoundException("Món ăn không tồn tại với trạng thái");
+        }
+        return dishMapper.toResponse(dish);
+    }
 }
