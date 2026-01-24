@@ -10,4 +10,5 @@ public interface DishService {
 
     DishResponse createDish(DishRequest dishRequest);
     List<DishResponse> getAllDishes(DishStatus dishStatus);
+    DishResponse getDishById(Long dishId, DishStatus dishStatus);
 }
