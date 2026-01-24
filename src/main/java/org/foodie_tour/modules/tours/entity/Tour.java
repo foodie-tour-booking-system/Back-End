@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.foodie_tour.modules.images.entity.TourImage;
 import org.foodie_tour.modules.routes.entity.Route;
 import org.foodie_tour.modules.schedules.entity.Schedule;
 import org.foodie_tour.modules.tours.enums.TourStatus;
@@ -64,5 +65,8 @@ public class Tour {
 
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
     private List<Route> routes;
+
+    @OneToMany(mappedBy = "tour")
+    private List<TourImage> tourImages;
 }
 

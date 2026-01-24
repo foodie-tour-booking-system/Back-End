@@ -4,10 +4,12 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.foodie_tour.modules.images.entity.Image;
 import org.foodie_tour.modules.tours.enums.DishStatus;
 import org.foodie_tour.modules.tours.enums.DishType;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -24,8 +26,8 @@ public class Dish {
     @Column(name = "dish_name")
     private String dishName;
 
-    @Column(name = "dish_image_url")
-    private String dishImageUrl;
+    @Column(name = "is_primary")
+    private Boolean isPrimary;
 
     @Column(name = "dish_description")
     private String dishDescription;
@@ -47,4 +49,7 @@ public class Dish {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tour_id", nullable = false)
     private Tour tour;
+
+    @OneToMany(mappedBy = "dish", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Image> images;
 }
