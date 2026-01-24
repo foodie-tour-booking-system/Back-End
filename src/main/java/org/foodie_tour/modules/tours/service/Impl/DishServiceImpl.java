@@ -7,6 +7,7 @@ import org.foodie_tour.modules.tours.dto.request.DishRequest;
 import org.foodie_tour.modules.tours.dto.response.DishResponse;
 import org.foodie_tour.modules.tours.entity.Dish;
 import org.foodie_tour.modules.tours.entity.Tour;
+import org.foodie_tour.modules.tours.enums.DishStatus;
 import org.foodie_tour.modules.tours.mapper.DishMapper;
 import org.foodie_tour.modules.tours.repository.DishRepository;
 import org.foodie_tour.modules.tours.repository.TourRepository;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -38,5 +40,19 @@ public class DishServiceImpl implements DishService {
         dish.setCreatedAt(LocalDateTime.now());
         dish = dishRepository.save(dish);
         return dishMapper.toResponse(dish);
+    }
+
+    @Override
+    public List<DishResponse> getAllDishes(DishStatus dishStatus) {
+        List<Dish> dishes;
+        if (dishStatus != null) {
+            dishes = dishRepository.findByDishStatus(dishStatus);
+        } else {
+            dishes = dishRepository.findAll();
+        }
+
+        return dishes.stream()
+                .map(dishMapper::toResponse)
+                .toList();
     }
 }
