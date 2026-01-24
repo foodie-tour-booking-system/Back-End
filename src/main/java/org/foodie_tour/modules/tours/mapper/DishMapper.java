@@ -5,6 +5,7 @@ import org.foodie_tour.modules.tours.dto.response.DishResponse;
 import org.foodie_tour.modules.tours.entity.Dish;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface DishMapper {
@@ -17,4 +18,8 @@ public interface DishMapper {
 
     @Mapping(target = "tourId", source = "tour.tourId")
     DishResponse toResponse(Dish dish);
+
+    @Mapping(target = "dishId", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    void updateEntity(DishRequest dishRequest, @MappingTarget Dish dish);
 }

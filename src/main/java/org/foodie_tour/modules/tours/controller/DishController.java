@@ -40,4 +40,18 @@ public class DishController {
         DishResponse response = dishService.getDishById(id, dishStatus);
         return ResponseEntity.ok(response);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<DishResponse> updateDish(
+            @PathVariable Long id,
+            @Valid @RequestBody DishRequest dishRequest
+    ) {
+        DishResponse response = dishService.updateDish(id, dishRequest);
+        return ResponseEntity.ok(response);
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteDish(@PathVariable Long id) {
+        dishService.deleteDish(id);
+        return ResponseEntity.ok("Xóa món ăn thành công");
+    }
 }
