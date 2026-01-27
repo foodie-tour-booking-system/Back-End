@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +36,19 @@ public class ImageServiceImpl implements ImageService {
 
         image = imageRepository.save(image);
         return imageMapper.toResponse(image);
+    }
+
+    @Override
+    public List<ImageResponse> getAllImages(ImageStatus imageStatus) {
+        List<Image> images;
+        if (imageStatus != null) {
+            images = imageRepository.findImageByImageStatus(imageStatus);
+        } else {
+            images = imageRepository.findAll();
+        }
+        return images.stream()
+                .map(imageMapper::toResponse)
+                .toList();
     }
 }
 
