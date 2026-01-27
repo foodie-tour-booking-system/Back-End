@@ -11,4 +11,5 @@ public interface ImageService {
 
     ImageResponse uploadImage(MultipartFile file, String description) throws IOException;
     List<ImageResponse> getAllImages(ImageStatus imageStatus);
+    ImageResponse getImageById(Long imageId);
 }

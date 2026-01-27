@@ -35,4 +35,10 @@ public class ImageController {
         List<ImageResponse> response = imageService.getAllImages(imageStatus);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ImageResponse> getImageById(@PathVariable("id") Long id) {
+        ImageResponse response = imageService.getImageById(id);
+        return ResponseEntity.ok(response);
+    }
 }
