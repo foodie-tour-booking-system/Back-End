@@ -12,6 +12,7 @@ public interface DishMapper {
 
     @Mapping(target = "dishId", ignore = true)
     @Mapping(target = "tour", ignore = true)
+    @Mapping(target = "images", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     Dish toEntity(DishRequest dishRequest);

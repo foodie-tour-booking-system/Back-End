@@ -3,6 +3,8 @@ package org.foodie_tour.modules.tours.service.Impl;
 import lombok.RequiredArgsConstructor;
 import org.foodie_tour.common.exception.DuplicateResourceException;
 import org.foodie_tour.common.exception.ResourceNotFoundException;
+import org.foodie_tour.modules.images.entity.Image;
+import org.foodie_tour.modules.images.repository.ImageRepository;
 import org.foodie_tour.modules.tours.dto.request.DishRequest;
 import org.foodie_tour.modules.tours.dto.response.DishResponse;
 import org.foodie_tour.modules.tours.entity.Dish;
@@ -24,6 +26,7 @@ public class DishServiceImpl implements DishService {
     private final DishRepository dishRepository;
     private final DishMapper dishMapper;
     private final TourRepository tourRepository;
+    private final ImageRepository imageRepository;
 
     @Override
     @Transactional
@@ -39,6 +42,15 @@ public class DishServiceImpl implements DishService {
         dish.setTour(tour);
         dish.setCreatedAt(LocalDateTime.now());
         dish = dishRepository.save(dish);
+
+        if (dishRequest.getImageId() != null) {
+            final Dish savedDish = dish;
+            Image image = imageRepository.findById(dishRequest.getImageId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Ảnh không tồn tại"));
+        image.setDish(savedDish);
+        dish.setIsPrimary(dishRequest.getIsPrimary());
+        imageRepository.save(image);
+        }
         return dishMapper.toResponse(dish);
     }
 
