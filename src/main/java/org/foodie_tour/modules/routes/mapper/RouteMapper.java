@@ -3,9 +3,7 @@ package org.foodie_tour.modules.routes.mapper;
 import org.foodie_tour.modules.routes.dto.request.RouteRequest;
 import org.foodie_tour.modules.routes.dto.response.RouteResponse;
 import org.foodie_tour.modules.routes.entity.Route;
-import org.foodie_tour.modules.routes.entity.RouteDetail;
-import org.foodie_tour.modules.tours.dto.request.TourRequest;
-import org.foodie_tour.modules.tours.entity.Tour;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

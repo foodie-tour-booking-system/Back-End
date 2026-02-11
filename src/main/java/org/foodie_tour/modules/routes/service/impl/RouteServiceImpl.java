@@ -2,14 +2,12 @@ package org.foodie_tour.modules.routes.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.foodie_tour.common.exception.DuplicateResourceException;
-import org.foodie_tour.common.exception.InvalidateDataException;
 import org.foodie_tour.common.exception.ResourceNotFoundException;
 import org.foodie_tour.modules.routes.dto.request.RouteRequest;
 import org.foodie_tour.modules.routes.dto.response.RouteResponse;
 import org.foodie_tour.modules.routes.entity.Route;
 import org.foodie_tour.modules.routes.enums.RouteStatus;
 import org.foodie_tour.modules.routes.mapper.RouteMapper;
-import org.foodie_tour.modules.routes.repository.RouteDetailRepository;
 import org.foodie_tour.modules.routes.repository.RouteRepository;
 import org.foodie_tour.modules.routes.service.RouteService;
 import org.foodie_tour.modules.tours.entity.Tour;
@@ -26,7 +24,6 @@ public class RouteServiceImpl implements RouteService {
     private final RouteRepository routeRepository;
     private final RouteMapper routeMapper;
     private final TourRepository tourRepository;
-    private final RouteDetailRepository routeDetailRepository;
 
     @Override
     @Transactional
@@ -37,7 +34,6 @@ public class RouteServiceImpl implements RouteService {
 
         Tour tour = tourRepository.findById(routeRequest.getTourId())
                 .orElseThrow(() -> new ResourceNotFoundException("Tour không tồn tại"));
-
 
         Route route = routeMapper.toEntity(routeRequest);
         route.setTour(tour);
@@ -85,8 +81,7 @@ public class RouteServiceImpl implements RouteService {
                 .orElseThrow(() -> new ResourceNotFoundException("Tuyến đường không tồn tại"));
 
         Tour tour = tourRepository.findById(routeRequest.getTourId())
-                        .orElseThrow(() -> new ResourceNotFoundException("Tour không tồn tại"));
-
+                .orElseThrow(() -> new ResourceNotFoundException("Tour không tồn tại"));
 
         routeMapper.updateEntity(routeRequest, route);
         route.setUpdatedAt(LocalDateTime.now());
