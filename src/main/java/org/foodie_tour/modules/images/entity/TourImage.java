@@ -4,10 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.foodie_tour.modules.images.enums.ImageStatus;
+
 import org.foodie_tour.modules.images.enums.TourImageStatus;
 import org.foodie_tour.modules.tours.entity.Tour;
-import org.mapstruct.Named;
 
 import java.time.LocalDateTime;
 

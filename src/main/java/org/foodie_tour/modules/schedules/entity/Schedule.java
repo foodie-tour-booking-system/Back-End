@@ -22,8 +22,8 @@ public class Schedule {
     @Column(name = "schedule_id")
     private Long scheduleId;
 
-    @Column(name = "schedule_name")
-    private String scheduleName;
+    @Column(name = "schedule_note", nullable = true)
+    private String scheduleNote;
 
     @Column(name = "schedule_description")
     private String scheduleDescription;
@@ -40,6 +40,9 @@ public class Schedule {
     @Column(name = "schedule_status")
     @Enumerated(EnumType.STRING)
     private ScheduleStatus scheduleStatus;
+
+    @Column(name = "departure_at")
+    private LocalDateTime departureAt;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
