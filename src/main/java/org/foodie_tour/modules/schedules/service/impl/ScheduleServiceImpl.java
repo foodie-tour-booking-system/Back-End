@@ -89,4 +89,12 @@ public class ScheduleServiceImpl implements ScheduleService {
                 schedule = scheduleRepository.save(schedule);
                 return scheduleMapper.toResponse(schedule);
         }
+
+        @Override
+        public void deleteSchedule(Long scheduleId) {
+                Schedule schedule = scheduleRepository.findById(scheduleId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Lịch trình không tồn tại"));
+                schedule.setScheduleStatus(ScheduleStatus.INACTIVE);
+                scheduleRepository.save(schedule);
+        }
 }
