@@ -1,5 +1,6 @@
 package org.foodie_tour.modules.schedules.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.foodie_tour.modules.schedules.dto.request.ScheduleRequest;
 import org.foodie_tour.modules.schedules.dto.response.ScheduleResponse;
@@ -30,5 +31,14 @@ public class ScheduleController {
             @RequestParam(required = false) ScheduleStatus scheduleStatus) {
         List<ScheduleResponse> responses = scheduleService.getSchedules(tourId, routeId, scheduleStatus);
         return ResponseEntity.ok(responses);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ScheduleResponse> updateSchedule(
+            @PathVariable Long id,
+            @RequestBody @Valid ScheduleRequest request
+    ) {
+        ScheduleResponse response = scheduleService.updateSchedule(id, request);
+        return ResponseEntity.ok(response);
     }
 }

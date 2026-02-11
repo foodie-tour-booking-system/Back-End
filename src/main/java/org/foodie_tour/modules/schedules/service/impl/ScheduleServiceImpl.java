@@ -1,6 +1,7 @@
 package org.foodie_tour.modules.schedules.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.foodie_tour.common.exception.InvalidateDataException;
 import org.foodie_tour.common.exception.ResourceNotFoundException;
 import org.foodie_tour.modules.routes.entity.Route;
 import org.foodie_tour.modules.routes.repository.RouteRepository;
@@ -41,6 +42,10 @@ public class ScheduleServiceImpl implements ScheduleService {
                 Route route = routeRepository.findById(request.getRouteId())
                                 .orElseThrow(() -> new ResourceNotFoundException("Tuyến đường không tồn tại"));
 
+                if (request.getMinPax() > request.getMaxPax()) {
+                        throw new InvalidateDataException("Số lượng khách tối thiểu không được lớn hơn số lượng khách tối đa");
+                }
+
                 Schedule schedule = scheduleMapper.toEntity(request);
                 schedule.setTour(tour);
                 schedule.setRoute(route);
@@ -59,5 +64,29 @@ public class ScheduleServiceImpl implements ScheduleService {
                                 .stream()
                                 .map(scheduleMapper::toResponse)
                                 .collect(Collectors.toList());
+        }
+
+        @Override
+        @Transactional
+        public ScheduleResponse updateSchedule(Long scheduleId, ScheduleRequest request) {
+                Schedule schedule = scheduleRepository.findById(scheduleId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Lịch trình không tồn tại"));
+
+                Tour tour = tourRepository.findById(request.getTourId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Tour không tồn tại"));
+
+                Route route = routeRepository.findById(request.getRouteId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Tuyến đường không tồn tại"));
+
+                if (request.getMinPax() > request.getMaxPax()) {
+                        throw new InvalidateDataException("Số lượng khách tối thiểu không được lớn hơn số lượng khách tối đa");
+                }
+
+                scheduleMapper.updateEntity(request, schedule);
+                schedule.setTour(tour);
+                schedule.setRoute(route);
+                schedule.setUpdatedAt(LocalDateTime.now());
+                schedule = scheduleRepository.save(schedule);
+                return scheduleMapper.toResponse(schedule);
         }
 }
