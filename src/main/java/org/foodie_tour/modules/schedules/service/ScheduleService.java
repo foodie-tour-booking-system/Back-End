@@ -8,6 +8,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface ScheduleService {
     ScheduleResponse createSchedule(ScheduleRequest request);
-
     List<ScheduleResponse> getSchedules(Long tourId, Long routeId, ScheduleStatus status);
+    ScheduleResponse updateSchedule(Long scheduleId, ScheduleRequest request);
 }
