@@ -3,13 +3,12 @@ package org.foodie_tour.modules.schedules.controller;
 import lombok.RequiredArgsConstructor;
 import org.foodie_tour.modules.schedules.dto.request.ScheduleRequest;
 import org.foodie_tour.modules.schedules.dto.response.ScheduleResponse;
+import org.foodie_tour.modules.schedules.enums.ScheduleStatus;
 import org.foodie_tour.modules.schedules.service.ScheduleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/schedules")
@@ -22,5 +21,14 @@ public class ScheduleController {
     public ResponseEntity<ScheduleResponse> createSchedule(@RequestBody ScheduleRequest request) {
         ScheduleResponse response = scheduleService.createSchedule(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<List<ScheduleResponse>> getSchedules(
+            @RequestParam(required = false) Long tourId,
+            @RequestParam(required = false) Long routeId,
+            @RequestParam(required = false) ScheduleStatus scheduleStatus) {
+        List<ScheduleResponse> responses = scheduleService.getSchedules(tourId, routeId, scheduleStatus);
+        return ResponseEntity.ok(responses);
     }
 }
