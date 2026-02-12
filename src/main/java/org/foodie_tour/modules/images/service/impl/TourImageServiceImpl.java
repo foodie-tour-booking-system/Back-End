@@ -15,6 +15,9 @@ import org.foodie_tour.modules.tours.repository.TourRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class TourImageServiceImpl implements TourImageService {
@@ -47,6 +50,21 @@ public class TourImageServiceImpl implements TourImageService {
 
         return tourImageMapper.toTourImageResponse(tourImage);
 
+    }
+
+    @Override
+    public List<TourImageResponse> getTourImages(Long tourId) {
+        return tourImageRepository.findByTourId(tourId)
+                .stream()
+                .map(img -> TourImageResponse.builder()
+                        .imageId(img.getImage().getImageId())
+                        .tourImageId(img.getTourImageId())
+                        .imageUrl(img.getImageUrl())
+                        .isPrimary(img.getIsPrimary())
+                        .displayOrder(img.getDisplayOrder())
+                        .status(img.getTourImageStatus())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     private void resetPrimaryStatus(Long tourId) {
