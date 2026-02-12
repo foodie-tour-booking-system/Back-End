@@ -25,6 +25,9 @@ public class TourImage {
     @Column(name = "is_primary")
     private Boolean isPrimary;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @Column(name = "display_order")
     private int displayOrder;
 

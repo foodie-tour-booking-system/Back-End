@@ -43,7 +43,8 @@ public class ScheduleServiceImpl implements ScheduleService {
                                 .orElseThrow(() -> new ResourceNotFoundException("Tuyến đường không tồn tại"));
 
                 if (request.getMinPax() > request.getMaxPax()) {
-                        throw new InvalidateDataException("Số lượng khách tối thiểu không được lớn hơn số lượng khách tối đa");
+                        throw new InvalidateDataException(
+                                        "Số lượng khách tối thiểu không được lớn hơn số lượng khách tối đa");
                 }
 
                 Schedule schedule = scheduleMapper.toEntity(request);
@@ -70,16 +71,17 @@ public class ScheduleServiceImpl implements ScheduleService {
         @Transactional
         public ScheduleResponse updateSchedule(Long scheduleId, ScheduleRequest request) {
                 Schedule schedule = scheduleRepository.findById(scheduleId)
-                        .orElseThrow(() -> new ResourceNotFoundException("Lịch trình không tồn tại"));
+                                .orElseThrow(() -> new ResourceNotFoundException("Lịch trình không tồn tại"));
 
                 Tour tour = tourRepository.findById(request.getTourId())
-                        .orElseThrow(() -> new ResourceNotFoundException("Tour không tồn tại"));
+                                .orElseThrow(() -> new ResourceNotFoundException("Tour không tồn tại"));
 
                 Route route = routeRepository.findById(request.getRouteId())
-                        .orElseThrow(() -> new ResourceNotFoundException("Tuyến đường không tồn tại"));
+                                .orElseThrow(() -> new ResourceNotFoundException("Tuyến đường không tồn tại"));
 
                 if (request.getMinPax() > request.getMaxPax()) {
-                        throw new InvalidateDataException("Số lượng khách tối thiểu không được lớn hơn số lượng khách tối đa");
+                        throw new InvalidateDataException(
+                                        "Số lượng khách tối thiểu không được lớn hơn số lượng khách tối đa");
                 }
 
                 scheduleMapper.updateEntity(request, schedule);
@@ -93,7 +95,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         @Override
         public void deleteSchedule(Long scheduleId) {
                 Schedule schedule = scheduleRepository.findById(scheduleId)
-                        .orElseThrow(() -> new ResourceNotFoundException("Lịch trình không tồn tại"));
+                                .orElseThrow(() -> new ResourceNotFoundException("Lịch trình không tồn tại"));
                 schedule.setScheduleStatus(ScheduleStatus.INACTIVE);
                 scheduleRepository.save(schedule);
         }
