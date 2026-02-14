@@ -8,4 +8,5 @@ import java.util.List;
 public interface TourImageService {
     TourImageResponse addImageToTour(Long tourId, TourImageRequest request);
     List<TourImageResponse> getTourImages(Long tourId);
+    void setPrimaryImage(Long tourId, Long tourImageId);
 }

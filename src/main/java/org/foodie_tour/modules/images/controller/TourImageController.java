@@ -3,7 +3,6 @@ package org.foodie_tour.modules.images.controller;
 import lombok.RequiredArgsConstructor;
 import org.foodie_tour.modules.images.dto.request.TourImageRequest;
 import org.foodie_tour.modules.images.dto.response.TourImageResponse;
-import org.foodie_tour.modules.images.repository.TourImageRepository;
 import org.foodie_tour.modules.images.service.TourImageService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,5 +27,14 @@ public class TourImageController {
     @GetMapping
     public ResponseEntity<List<TourImageResponse>> getImages(@PathVariable Long tourId) {
         return ResponseEntity.ok(tourImageService.getTourImages(tourId));
+    }
+
+    @PatchMapping("/{tourImageId}/set-primary")
+    public ResponseEntity<String> setPrimary(
+            @PathVariable Long tourId,
+            @PathVariable Long tourImageId
+    ) {
+        tourImageService.setPrimaryImage(tourId, tourImageId);
+        return ResponseEntity.ok("Chỉnh sửa hình ảnh thành công");
     }
 }
