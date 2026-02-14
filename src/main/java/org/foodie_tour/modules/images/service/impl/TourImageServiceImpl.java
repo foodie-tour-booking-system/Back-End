@@ -46,10 +46,10 @@ public class TourImageServiceImpl implements TourImageService {
         tourImage.setIsPrimary(request.getIsPrimary());
         tourImage.setDisplayOrder(request.getDisplayOrder());
         tourImage.setTourImageStatus(request.getStatus());
-        tourImage = tourImageRepository.save(tourImage);
 
-        return tourImageMapper.toTourImageResponse(tourImage);
+        TourImage savedImage = tourImageRepository.save(tourImage);
 
+        return tourImageMapper.toTourImageResponse(savedImage);
     }
 
     @Override
@@ -65,6 +65,31 @@ public class TourImageServiceImpl implements TourImageService {
                         .status(img.getTourImageStatus())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void setPrimaryImage(Long tourId, Long tourImageId) {
+        List<TourImage> images = tourImageRepository.findByTourId(tourId);
+
+        if (images.isEmpty()) {
+            throw new ResourceNotFoundException("Không tìm thấy hình ảnh");
+        }
+
+        boolean found = false;
+        for (TourImage img : images) {
+            if (img.getTourImageId().equals(tourImageId)) {
+                img.setIsPrimary(true);
+                found = true;
+            } else {
+                img.setIsPrimary(false);
+            }
+        }
+
+        if (!found) {
+            throw new ResourceNotFoundException("Không tìm thấy hình ảnh trong tour này");
+        }
+        tourImageRepository.saveAll(images);
     }
 
     private void resetPrimaryStatus(Long tourId) {
