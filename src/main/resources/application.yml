@@ -42,3 +42,13 @@ aws:
     bucket: ${BUCKET}
     access-key: ${ACCESS_KEY}
     secret-key: ${SECRET_KEY}
+
+vnpay:
+  tmn-code: ${VNP_TMN}
+  hash-secret: ${VNP_HASH}
+  payment-url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+  return-url: ${VNP_RETURN_URL}
+  ipn-url: ${VNP_IPN_URL}
+  expired-time: ${VNP_EXPIRE_TIME}
+  payment-success-url: ${VNP_PAYMENT_SUCCESS_URL}
+  payment-failed-url: ${VNP_PAYMENT_FAILED_URL}
