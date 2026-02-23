@@ -6,12 +6,23 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import org.apache.commons.codec.binary.Hex;
+import org.foodie_tour.common.exception.InvalidateDataException;
+import org.foodie_tour.common.exception.ResourceNotFoundException;
 import org.foodie_tour.common.utils.RandomCode;
 import org.foodie_tour.config.VNPayConfig;
+import org.foodie_tour.modules.booking.entity.Booking;
+import org.foodie_tour.modules.booking.entity.BookingLog;
+import org.foodie_tour.modules.booking.enums.BookingStatus;
+import org.foodie_tour.modules.booking.enums.PaymentMethod;
+import org.foodie_tour.modules.booking.repository.BookingRepository;
+import org.foodie_tour.modules.transaction.entity.Transactions;
+import org.foodie_tour.modules.transaction.enums.CashFlow;
+import org.foodie_tour.modules.transaction.enums.TransactionStatus;
 import org.foodie_tour.modules.vnpay.dto.request.PaymentRequest;
 import org.foodie_tour.modules.vnpay.service.VNPayService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.crypto.Mac;
@@ -27,6 +38,8 @@ import java.util.*;
 public class VNPayServiceImpl implements VNPayService {
 
     VNPayConfig vnPayConfig;
+
+    BookingRepository bookingRepository;
 
     @Value("${vnpay.expired-time}")
     @NonFinal
@@ -58,6 +71,16 @@ public class VNPayServiceImpl implements VNPayService {
 
     public void verifyPaymentRequest(PaymentRequest request, String ipAddress) {
         // verify booking id and amount
+        if (!bookingRepository.existsById(request.getBookingId())) {
+            throw new ResourceNotFoundException("Đặt lịch không tồn tại");
+        }
+
+        long price = bookingRepository.getPriceByBookingId(request.getBookingId())
+                .orElseThrow(() -> new ResourceNotFoundException("Đặt lịch không tồn tại"));
+
+        if (price != request.getAmount()) {
+            throw new InvalidateDataException("Số tiền thanh toán không hợp lệ");
+        }
 
         if (!StringUtils.hasText(ipAddress)) {
             throw new RuntimeException("Không trích xuất được địa chỉ ip");
@@ -78,6 +101,9 @@ public class VNPayServiceImpl implements VNPayService {
 
     private Map<String, String> buildPaymentParams(PaymentRequest request, String ipAddress) {
         Map<String, String> vnp_Params = new HashMap<>();
+
+        Booking booking = bookingRepository.findById(request.getBookingId()).orElseThrow(() -> new ResourceNotFoundException("Đặt lịch không tồn tại"));
+
         // Put metadata
         vnp_Params.put("vnp_Version", VNPayConfig.VERSION);
         vnp_Params.put("vnp_Command", VNPayConfig.COMMAND);
@@ -86,11 +112,10 @@ public class VNPayServiceImpl implements VNPayService {
         vnp_Params.put("vnp_CurrCode", VNPayConfig.CURR_CODE);
 
         // Build txnRef - special id for payment request
-        String txnRef = RandomCode.generateRandomCode(String.valueOf(request.getBookingId()), 16);
+        String txnRef = RandomCode.generateRandomCodeByKey(String.valueOf(request.getBookingId()), 16);
         vnp_Params.put("vnp_TxnRef", txnRef);
 
-        // Replace booking id by booking tracking code
-        String orderInfo = "Payment for booking " + request.getBookingId();
+        String orderInfo = booking.getBookingCode();
         vnp_Params.put("vnp_OrderInfo", orderInfo);
 
         // Build order type
@@ -252,6 +277,7 @@ public class VNPayServiceImpl implements VNPayService {
 
     // Process status
 
+    @Transactional
     public String processPaymentResponse(Map<String, String> response) {
         if (response.isEmpty()) {
             throw new RuntimeException("Thiếu tham số");
@@ -264,31 +290,74 @@ public class VNPayServiceImpl implements VNPayService {
         }
     }
 
+    @Transactional
     public String buildPaymentStatus(Map<String, String> response) {
         String responseCode = response.get("vnp_ResponseCode");
-        String transactionStatus = response.get("vnp_TransactionStatus");
-
+        String vnpTransactionStatus = response.get("vnp_TransactionStatus");
 
         if (!response.containsKey("vnp_Amount")) {
             throw new RuntimeException("Thiếu tham số");
         }
 
-        boolean success = responseCode.equals("00") && transactionStatus.equals("00");
+        boolean success = responseCode.equals("00") && vnpTransactionStatus.equals("00");
         String bookingCode = response.get("vnp_OrderInfo");
 
-        int amount = Integer.parseInt(response.get("vnp_Amount"));
+        Booking booking = bookingRepository.findByBookingCode(bookingCode)
+                .orElseThrow(() -> new ResourceNotFoundException("Đặt lịch không tồn tại"));
 
+        long amount = Long.parseLong(response.get("vnp_Amount")) / 100;
+
+        if (amount != booking.getTotalPrice()) {
+            throw new InvalidateDataException("Thông tin thanh toán không trùng khớp");
+        }
 
         String returnUrl;
+        BookingStatus bookingStatus;
+        TransactionStatus transactionStatus;
+        String logDescription;
 
+        // Create transaction entity
+        Transactions transaction = Transactions.builder()
+                .booking(booking)
+                .amount(amount)
+                .paymentMethod(PaymentMethod.VNPAY)
+                .cashFlow(CashFlow.INCOME)
+                .status(TransactionStatus.PENDING)
+                .build();
+
+        booking.getBookingTransactions().add(transaction);
+
+        // Create log
+        BookingLog log = BookingLog.builder()
+                .booking(booking)
+                .build();
+
+        booking.getBookingLogs().add(log);
 
         if (success) {
-            // Code implement
+            // Update booking & transaction
+            bookingStatus = BookingStatus.COMPLETED;
+            transactionStatus = TransactionStatus.SUCCESS;
+            logDescription = "Thanh toán thành công";
+
+            // Create customer 
+
             returnUrl = SUCCESS_URL;
         } else {
-            // Code implement
+            // Update booking & transaction
+            bookingStatus = BookingStatus.CANCELLED;
+            transactionStatus = TransactionStatus.FAILED;
+            logDescription = "Thanh toán thất bại";
             returnUrl = FAILED_URL;
         }
+
+        transaction.setStatus(transactionStatus);
+        booking.setBookingStatus(bookingStatus);
+
+        log.setDescription(logDescription);
+        log.setBookingStatus(bookingStatus);
+
+        bookingRepository.save(booking);
 
         return returnUrl;
     }
