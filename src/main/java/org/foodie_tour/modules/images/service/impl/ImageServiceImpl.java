@@ -64,6 +64,3 @@ public class ImageServiceImpl implements ImageService {
         return imageMapper.toResponse(image);
     }
 }
-
-
-
