@@ -38,9 +38,6 @@ public class Schedule {
     @Enumerated(EnumType.STRING)
     private ScheduleStatus scheduleStatus;
 
-    @Column(name = "tour_image_url")
-    private String tourImageUrl;
-
     @Column(name = "departure_at")
     private LocalDateTime departureAt;
 

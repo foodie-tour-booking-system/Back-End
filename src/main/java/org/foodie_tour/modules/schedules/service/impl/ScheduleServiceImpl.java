@@ -15,8 +15,6 @@ import org.foodie_tour.modules.schedules.service.ScheduleService;
 import org.foodie_tour.modules.schedules.specifications.ScheduleSpecification;
 import org.foodie_tour.modules.tours.entity.Tour;
 import org.foodie_tour.modules.tours.repository.TourRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,75 +26,75 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ScheduleServiceImpl implements ScheduleService {
-        private final TourRepository tourRepository;
-        private final RouteRepository routeRepository;
-        private final ScheduleMapper scheduleMapper;
-        private final ScheduleRepository scheduleRepository;
+    private final TourRepository tourRepository;
+    private final RouteRepository routeRepository;
+    private final ScheduleMapper scheduleMapper;
+    private final ScheduleRepository scheduleRepository;
 
-        @Override
-        @Transactional
-        public ScheduleResponse createSchedule(ScheduleRequest request) {
-                Tour tour = tourRepository.findById(request.getTourId())
-                                .orElseThrow(() -> new ResourceNotFoundException("Tour không tồn tại"));
+    @Override
+    @Transactional
+    public ScheduleResponse createSchedule(ScheduleRequest request) {
+        Tour tour = tourRepository.findById(request.getTourId())
+                .orElseThrow(() -> new ResourceNotFoundException("Tour không tồn tại"));
 
-                Route route = routeRepository.findById(request.getRouteId())
-                                .orElseThrow(() -> new ResourceNotFoundException("Tuyến đường không tồn tại"));
+        Route route = routeRepository.findById(request.getRouteId())
+                .orElseThrow(() -> new ResourceNotFoundException("Tuyến đường không tồn tại"));
 
-                if (request.getMinPax() > request.getMaxPax()) {
-                        throw new InvalidateDataException(
-                                        "Số lượng khách tối thiểu không được lớn hơn số lượng khách tối đa");
-                }
-
-                Schedule schedule = scheduleMapper.toEntity(request);
-                schedule.setTour(tour);
-                schedule.setRoute(route);
-                schedule.setCreatedAt(LocalDateTime.now());
-                schedule = scheduleRepository.save(schedule);
-                return scheduleMapper.toResponse(schedule);
+        if (request.getMinPax() > request.getMaxPax()) {
+            throw new InvalidateDataException(
+                    "Số lượng khách tối thiểu không được lớn hơn số lượng khách tối đa");
         }
 
-        @Override
-        @Transactional(readOnly = true)
-        public List<ScheduleResponse> getSchedules(Long tourId, Long routeId, ScheduleStatus status) {
-                Specification<Schedule> spec = Specification.where(ScheduleSpecification.hasTourId(tourId))
-                                .and(ScheduleSpecification.hasRouteId(routeId))
-                                .and(ScheduleSpecification.hasStatus(status));
-                return scheduleRepository.findAll(spec)
-                                .stream()
-                                .map(scheduleMapper::toResponse)
-                                .collect(Collectors.toList());
+        Schedule schedule = scheduleMapper.toEntity(request);
+        schedule.setTour(tour);
+        schedule.setRoute(route);
+        schedule.setCreatedAt(LocalDateTime.now());
+        schedule = scheduleRepository.save(schedule);
+        return scheduleMapper.toResponse(schedule);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ScheduleResponse> getSchedules(Long tourId, Long routeId, ScheduleStatus status) {
+        Specification<Schedule> spec = Specification.where(ScheduleSpecification.hasTourId(tourId))
+                .and(ScheduleSpecification.hasRouteId(routeId))
+                .and(ScheduleSpecification.hasStatus(status));
+        return scheduleRepository.findAll(spec)
+                .stream()
+                .map(scheduleMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public ScheduleResponse updateSchedule(Long scheduleId, ScheduleRequest request) {
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Lịch trình không tồn tại"));
+
+        Tour tour = tourRepository.findById(request.getTourId())
+                .orElseThrow(() -> new ResourceNotFoundException("Tour không tồn tại"));
+
+        Route route = routeRepository.findById(request.getRouteId())
+                .orElseThrow(() -> new ResourceNotFoundException("Tuyến đường không tồn tại"));
+
+        if (request.getMinPax() > request.getMaxPax()) {
+            throw new InvalidateDataException(
+                    "Số lượng khách tối thiểu không được lớn hơn số lượng khách tối đa");
         }
 
-        @Override
-        @Transactional
-        public ScheduleResponse updateSchedule(Long scheduleId, ScheduleRequest request) {
-                Schedule schedule = scheduleRepository.findById(scheduleId)
-                                .orElseThrow(() -> new ResourceNotFoundException("Lịch trình không tồn tại"));
+        scheduleMapper.updateEntity(request, schedule);
+        schedule.setTour(tour);
+        schedule.setRoute(route);
+        schedule.setUpdatedAt(LocalDateTime.now());
+        schedule = scheduleRepository.save(schedule);
+        return scheduleMapper.toResponse(schedule);
+    }
 
-                Tour tour = tourRepository.findById(request.getTourId())
-                                .orElseThrow(() -> new ResourceNotFoundException("Tour không tồn tại"));
-
-                Route route = routeRepository.findById(request.getRouteId())
-                                .orElseThrow(() -> new ResourceNotFoundException("Tuyến đường không tồn tại"));
-
-                if (request.getMinPax() > request.getMaxPax()) {
-                        throw new InvalidateDataException(
-                                        "Số lượng khách tối thiểu không được lớn hơn số lượng khách tối đa");
-                }
-
-                scheduleMapper.updateEntity(request, schedule);
-                schedule.setTour(tour);
-                schedule.setRoute(route);
-                schedule.setUpdatedAt(LocalDateTime.now());
-                schedule = scheduleRepository.save(schedule);
-                return scheduleMapper.toResponse(schedule);
-        }
-
-        @Override
-        public void deleteSchedule(Long scheduleId) {
-                Schedule schedule = scheduleRepository.findById(scheduleId)
-                                .orElseThrow(() -> new ResourceNotFoundException("Lịch trình không tồn tại"));
-                schedule.setScheduleStatus(ScheduleStatus.INACTIVE);
-                scheduleRepository.save(schedule);
-        }
+    @Override
+    public void deleteSchedule(Long scheduleId) {
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Lịch trình không tồn tại"));
+        schedule.setScheduleStatus(ScheduleStatus.INACTIVE);
+        scheduleRepository.save(schedule);
+    }
 }
