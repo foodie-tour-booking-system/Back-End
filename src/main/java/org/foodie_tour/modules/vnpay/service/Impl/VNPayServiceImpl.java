@@ -18,6 +18,7 @@ import org.foodie_tour.modules.booking.repository.BookingRepository;
 import org.foodie_tour.modules.transaction.entity.Transactions;
 import org.foodie_tour.modules.transaction.enums.CashFlow;
 import org.foodie_tour.modules.transaction.enums.TransactionStatus;
+import org.foodie_tour.modules.transaction.repository.TransactionsRepository;
 import org.foodie_tour.modules.vnpay.dto.request.PaymentRequest;
 import org.foodie_tour.modules.vnpay.service.VNPayService;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +41,7 @@ public class VNPayServiceImpl implements VNPayService {
     VNPayConfig vnPayConfig;
 
     BookingRepository bookingRepository;
+    private final TransactionsRepository transactionsRepository;
 
     @Value("${vnpay.expired-time}")
     @NonFinal
@@ -312,22 +314,26 @@ public class VNPayServiceImpl implements VNPayService {
         if (amount != booking.getTotalPrice()) {
             throw new InvalidateDataException("Thông tin thanh toán không trùng khớp");
         }
+        String vnpTransactionNo = response.get("vnp_TransactionNo");
 
         String returnUrl;
         BookingStatus bookingStatus;
         TransactionStatus transactionStatus;
         String logDescription;
 
-        // Create transaction entity
-        Transactions transaction = Transactions.builder()
+        Transactions.TransactionsBuilder transactionBuilder = Transactions.builder()
                 .booking(booking)
                 .amount(amount)
                 .paymentMethod(PaymentMethod.VNPAY)
                 .cashFlow(CashFlow.INCOME)
-                .status(TransactionStatus.PENDING)
-                .build();
+                .status(TransactionStatus.PENDING);
 
-        booking.getBookingTransactions().add(transaction);
+        if (vnpTransactionNo != null) {
+            transactionBuilder.gatewayTransactionId(Long.parseLong(vnpTransactionNo));
+        }
+
+        Transactions transaction = transactionBuilder.build();
+        transactionsRepository.save(transaction);
 
         // Create log
         BookingLog log = BookingLog.builder()

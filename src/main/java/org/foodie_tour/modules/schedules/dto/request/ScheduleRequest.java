@@ -22,9 +22,6 @@ public class ScheduleRequest {
     private String scheduleNote;
     private String scheduleDescription;
 
-    @Min(value = 1, message = "Thời lượng tour phải lớn hơn 0")
-    private Integer duration;
-
     @NotNull(message = "Số lượng khách tối thiểu không được để trống")
     @Min(value = 1, message = "Số lượng khách tối thiểu ít nhất là 1")
     private Integer minPax;
