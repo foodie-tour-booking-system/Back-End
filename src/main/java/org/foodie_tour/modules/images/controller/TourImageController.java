@@ -7,8 +7,6 @@ import org.foodie_tour.modules.images.service.TourImageService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/tour/{tourId}/images")
 @RequiredArgsConstructor
@@ -19,22 +17,7 @@ public class TourImageController {
     @PostMapping
     public ResponseEntity<TourImageResponse> addImage(
             @PathVariable Long tourId,
-            @RequestBody TourImageRequest request
-    ) {
+            @RequestBody TourImageRequest request) {
         return ResponseEntity.ok(tourImageService.addImageToTour(tourId, request));
-    }
-
-    @GetMapping
-    public ResponseEntity<List<TourImageResponse>> getImages(@PathVariable Long tourId) {
-        return ResponseEntity.ok(tourImageService.getTourImages(tourId));
-    }
-
-    @PatchMapping("/{tourImageId}/set-primary")
-    public ResponseEntity<String> setPrimary(
-            @PathVariable Long tourId,
-            @PathVariable Long tourImageId
-    ) {
-        tourImageService.setPrimaryImage(tourId, tourImageId);
-        return ResponseEntity.ok("Chỉnh sửa hình ảnh thành công");
     }
 }
