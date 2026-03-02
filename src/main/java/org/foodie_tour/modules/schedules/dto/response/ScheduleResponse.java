@@ -15,7 +15,6 @@ public class ScheduleResponse {
     private Long routeId;
     private String scheduleNote;
     private String scheduleDescription;
-    private Integer duration;
     private Integer minPax;
     private Integer maxPax;
     private LocalDateTime departureAt;
