@@ -36,9 +36,6 @@ public class Transactions {
     @Column(name = "gateway_transaction_id")
     Long gatewayTransactionId;
 
-    @Column(name = "description", columnDefinition = "TEXT")
-    String description;
-
     @Column(name = "amount")
     Long amount;
 
@@ -51,11 +48,14 @@ public class Transactions {
     LocalDateTime updatedAt;
 
     @Column(name = "cash_flow")
+    @Enumerated(EnumType.STRING)
     CashFlow cashFlow;
 
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     TransactionStatus status;
 
     @Column(name = "payment_method")
+    @Enumerated(EnumType.STRING)
     PaymentMethod paymentMethod;
 }

@@ -1,3 +1,4 @@
+
 package org.foodie_tour.modules.booking.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -36,5 +37,6 @@ public class BookingLog {
     LocalDateTime createAt;
 
     @Column(name = "booking_status")
+    @Enumerated(EnumType.STRING)
     BookingStatus bookingStatus;
 }

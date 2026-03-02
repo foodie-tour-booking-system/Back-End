@@ -10,6 +10,6 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PaymentRequest {
-    long bookingId;
-    long amount;
+    Long bookingId;
+    Long amount;
 }

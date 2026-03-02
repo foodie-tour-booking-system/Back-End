@@ -1,4 +1,4 @@
-package org.foodie_tour.modules.vnpay.service.Impl;
+package org.foodie_tour.modules.vnpay.service.impl;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
@@ -116,6 +116,7 @@ public class VNPayServiceImpl implements VNPayService {
         vnp_Params.put("vnp_TxnRef", txnRef);
 
         String orderInfo = booking.getBookingCode();
+
         vnp_Params.put("vnp_OrderInfo", orderInfo);
 
         // Build order type
@@ -294,6 +295,7 @@ public class VNPayServiceImpl implements VNPayService {
     public String buildPaymentStatus(Map<String, String> response) {
         String responseCode = response.get("vnp_ResponseCode");
         String vnpTransactionStatus = response.get("vnp_TransactionStatus");
+
 
         if (!response.containsKey("vnp_Amount")) {
             throw new RuntimeException("Thiếu tham số");

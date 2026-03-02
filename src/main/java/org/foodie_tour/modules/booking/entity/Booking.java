@@ -70,12 +70,15 @@ public class Booking {
     LocalDateTime updateAt;
 
     @Column(name = "booking_status")
+    @Enumerated(EnumType.STRING)
     BookingStatus bookingStatus;
 
     @Column(name = "refund_status")
+    @Enumerated(EnumType.STRING)
     RefundStatus refundStatus;
 
     @Column(name = "payment_method")
+    @Enumerated(EnumType.STRING)
     PaymentMethod paymentMethod;
 
     @OneToMany(mappedBy = "booking", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

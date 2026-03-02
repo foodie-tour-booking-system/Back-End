@@ -28,9 +28,6 @@ public class Schedule {
     @Column(name = "schedule_description")
     private String scheduleDescription;
 
-    @Column(name = "duration")
-    private int duration;
-
     @Column(name = "max_pax")
     private int maxPax;
 
