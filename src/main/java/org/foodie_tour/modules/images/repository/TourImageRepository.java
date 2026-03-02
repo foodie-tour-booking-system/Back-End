@@ -16,4 +16,3 @@ public interface TourImageRepository extends JpaRepository<TourImage, Long> {
     @Query("UPDATE TourImage ti SET ti.isPrimary = false WHERE ti.tour.tourId = :tourId")
     void resetPrimaryStatusByTourId(@Param("tourId") Long tourId);
 }
-

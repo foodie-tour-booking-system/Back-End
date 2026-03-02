@@ -20,4 +20,18 @@ public class TourImageController {
             @RequestBody TourImageRequest request) {
         return ResponseEntity.ok(tourImageService.addImageToTour(tourId, request));
     }
+
+    @GetMapping
+    public ResponseEntity<List<TourImageResponse>> getImages(@PathVariable Long tourId) {
+        return ResponseEntity.ok(tourImageService.getTourImages(tourId));
+    }
+
+    @PatchMapping("/{tourImageId}/set-primary")
+    public ResponseEntity<String> setPrimary(
+            @PathVariable Long tourId,
+            @PathVariable Long tourImageId
+    ) {
+        tourImageService.setPrimaryImage(tourId, tourImageId);
+        return ResponseEntity.ok("Chỉnh sửa hình ảnh thành công");
+    }
 }
