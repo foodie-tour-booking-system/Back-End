@@ -15,6 +15,11 @@ import org.foodie_tour.modules.booking.entity.BookingLog;
 import org.foodie_tour.modules.booking.enums.BookingStatus;
 import org.foodie_tour.modules.booking.enums.PaymentMethod;
 import org.foodie_tour.modules.booking.repository.BookingRepository;
+import org.foodie_tour.modules.customer.entity.Customer;
+import org.foodie_tour.modules.customer.entity.CustomerBooking;
+import org.foodie_tour.modules.customer.enums.CustomerStatus;
+import org.foodie_tour.modules.customer.repository.CustomerBookingRepository;
+import org.foodie_tour.modules.customer.repository.CustomerRepository;
 import org.foodie_tour.modules.transaction.entity.Transactions;
 import org.foodie_tour.modules.transaction.enums.CashFlow;
 import org.foodie_tour.modules.transaction.enums.TransactionStatus;
@@ -42,6 +47,8 @@ public class VNPayServiceImpl implements VNPayService {
 
     BookingRepository bookingRepository;
     private final TransactionsRepository transactionsRepository;
+    private final CustomerBookingRepository customerBookingRepository;
+    private final CustomerRepository customerRepository;
 
     @Value("${vnpay.expired-time}")
     @NonFinal
@@ -348,7 +355,12 @@ public class VNPayServiceImpl implements VNPayService {
             transactionStatus = TransactionStatus.SUCCESS;
             logDescription = "Thanh toán thành công";
 
-            // Create customer 
+            // Create customer
+            customerBookingRepository.findByBooking(booking).ifPresent(cb -> {
+                Customer customer = cb.getCustomer();
+                customer.setStatus(CustomerStatus.ACTIVE);
+                customerRepository.save(customer);
+            });
 
             returnUrl = SUCCESS_URL;
         } else {
