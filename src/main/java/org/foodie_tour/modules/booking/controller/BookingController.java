@@ -6,8 +6,11 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.foodie_tour.modules.booking.dto.request.BookingCreateRequest;
+import org.foodie_tour.modules.booking.dto.request.ProcessRelocateRequest;
+import org.foodie_tour.modules.booking.dto.request.RelocateBookingRequest;
 import org.foodie_tour.modules.booking.dto.response.BookingLogResponse;
 import org.foodie_tour.modules.booking.dto.response.BookingResponse;
+import org.foodie_tour.modules.booking.dto.response.RelocateBookingResponse;
 import org.foodie_tour.modules.booking.service.BookingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,4 +48,30 @@ public class BookingController {
         var result = bookingService.generatePaymentUrl(bookingId, servletRequest);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
+
+    @GetMapping("/relocate/all-request")
+    public ResponseEntity<List<RelocateBookingResponse>> getAllRelocateRequest() {
+        var result = bookingService.getAllPendingRelocateRequest();
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @PostMapping("/{bookingCode}/relocate")
+    public ResponseEntity<String> relocateBooking(@PathVariable String bookingCode) {
+        var result = bookingService.requestRelocateBooking(bookingCode);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @PostMapping("/relocate/verify")
+    public ResponseEntity<String> verifyBooking(@RequestHeader (value = "Access-Token") String accessToken, @RequestBody RelocateBookingRequest request) {
+        bookingService.createRelocateBookingRequest(accessToken, request);
+        return ResponseEntity.status(HttpStatus.OK).body("Tạo yêu cầu thành công");
+    }
+
+    @PutMapping("/relocate/process")
+    public ResponseEntity<BookingResponse> processRequest(@RequestBody ProcessRelocateRequest request) {
+        var result = bookingService.processRelocateRequest(request);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+
 }
