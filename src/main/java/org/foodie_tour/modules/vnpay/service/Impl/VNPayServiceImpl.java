@@ -1,4 +1,4 @@
-package org.foodie_tour.modules.vnpay.service.impl;
+package org.foodie_tour.modules.vnpay.service.Impl;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;

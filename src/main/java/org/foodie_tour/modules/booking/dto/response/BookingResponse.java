@@ -4,6 +4,8 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.foodie_tour.modules.booking.enums.BookingStatus;
 
+import java.time.LocalDateTime;
+
 @Setter
 @Getter
 @Builder
@@ -18,4 +20,6 @@ public class BookingResponse {
     String pickupLocation;
 
     BookingStatus bookingStatus;
+
+    LocalDateTime departureTime;
 }
