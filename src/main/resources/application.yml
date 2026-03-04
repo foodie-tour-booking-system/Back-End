@@ -52,3 +52,7 @@ vnpay:
   expired-time: ${VNP_EXPIRE_TIME}
   payment-success-url: ${VNP_PAYMENT_SUCCESS_URL}
   payment-failed-url: ${VNP_PAYMENT_FAILED_URL}
+
+auth:
+  key: ${AUTH_KEY}
+  issuer: ${AUTH_ISSUER}
