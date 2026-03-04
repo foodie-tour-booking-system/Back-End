@@ -15,21 +15,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class BookingCreateRequest {
     long scheduleId;
-
+    String customerName;
     String email;
-
     String phone;
-
     LocalDateTime dateTime;
-
     int adultCount;
-
     int childrenCount;
-
     String pickupLocation;
-
     String customerNote;
-
     PaymentMethod paymentMethod;
 
 }

@@ -17,8 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
+@Data
 @ToString(exclude = {"schedule", "bookingLogs", "bookingTransactions"})
 @NoArgsConstructor
 @AllArgsConstructor

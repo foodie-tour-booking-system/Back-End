@@ -18,6 +18,11 @@ import org.foodie_tour.modules.booking.mapper.BookingMapper;
 import org.foodie_tour.modules.booking.repository.BookingLogRepository;
 import org.foodie_tour.modules.booking.repository.BookingRepository;
 import org.foodie_tour.modules.booking.service.BookingService;
+import org.foodie_tour.modules.customer.entity.Customer;
+import org.foodie_tour.modules.customer.entity.CustomerBooking;
+import org.foodie_tour.modules.customer.enums.CustomerStatus;
+import org.foodie_tour.modules.customer.repository.CustomerBookingRepository;
+import org.foodie_tour.modules.customer.repository.CustomerRepository;
 import org.foodie_tour.modules.schedules.entity.Schedule;
 import org.foodie_tour.modules.schedules.repository.ScheduleRepository;
 import org.foodie_tour.modules.tours.entity.Tour;
@@ -38,9 +43,26 @@ public class BookingServiceImpl implements BookingService {
     BookingMapper bookingMapper;
     BookingLogMapper bookingLogMapper;
     VNPayService vnPayService;
+    private final CustomerRepository customerRepository;
+    private final CustomerBookingRepository customerBookingRepository;
 
     @Transactional
     public BookingResponse createBooking(BookingCreateRequest request) {
+        Customer customer = customerRepository.findByEmail(request.getEmail())
+                .orElseGet(() -> {
+                    Customer newCustomer = new Customer();
+                    newCustomer.setEmail(request.getEmail());
+                    newCustomer.setCustomerName(request.getCustomerName());
+                    newCustomer.setPhone(request.getPhone());
+                    newCustomer.setStatus(CustomerStatus.PENDING);
+                    return customerRepository.save(newCustomer);
+                });
+
+        //if exist
+        customer.setCustomerName(request.getCustomerName());
+        customer.setPhone(request.getPhone());
+        customerRepository.save(customer);
+
         // Create booking
         Booking booking = bookingMapper.toBooking(request);
 
@@ -80,6 +102,11 @@ public class BookingServiceImpl implements BookingService {
 
         bookingRepository.save(booking);
 
+        CustomerBooking customerBooking = new CustomerBooking();
+        customerBooking.setCustomer(customer);
+        customerBooking.setBooking(booking);
+        customerBooking.setIsMain(true);
+        customerBookingRepository.save(customerBooking);
         return bookingMapper.toResponse(booking);
     }
 
