@@ -18,8 +18,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "tours", indexes = {
-        @Index(name = "idx_tour_status", columnList = "status"),
-        @Index(name = "idx_tour_name", columnList = "name")
+        @Index(name = "idx_tour_status", columnList = "tour_status"),
+        @Index(name = "idx_tour_name", columnList = "tour_name")
 })
 public class Tour {
 
@@ -69,4 +69,3 @@ public class Tour {
     @OneToMany(mappedBy = "tour")
     private List<TourImage> tourImages;
 }
-
