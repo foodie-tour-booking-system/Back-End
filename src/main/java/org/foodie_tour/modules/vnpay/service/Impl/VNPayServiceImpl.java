@@ -1,4 +1,4 @@
-package org.foodie_tour.modules.vnpay.service.Impl;
+package org.foodie_tour.modules.vnpay.service.impl;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
@@ -98,7 +98,7 @@ public class VNPayServiceImpl implements VNPayService {
 
     public String generatePaymentUrl(PaymentRequest request, HttpServletRequest servletRequest) {
         String ipAddress = getIpAddress(servletRequest);
-        verifyPaymentRequest(request,ipAddress);
+        verifyPaymentRequest(request, ipAddress);
         try {
             Map<String, String> vnp_params = buildPaymentParams(request, ipAddress);
             String queryUrl = createQueryUrl(vnp_params);
@@ -111,7 +111,8 @@ public class VNPayServiceImpl implements VNPayService {
     private Map<String, String> buildPaymentParams(PaymentRequest request, String ipAddress) {
         Map<String, String> vnp_Params = new HashMap<>();
 
-        Booking booking = bookingRepository.findById(request.getBookingId()).orElseThrow(() -> new ResourceNotFoundException("Đặt lịch không tồn tại"));
+        Booking booking = bookingRepository.findById(request.getBookingId())
+                .orElseThrow(() -> new ResourceNotFoundException("Đặt lịch không tồn tại"));
 
         // Put metadata
         vnp_Params.put("vnp_Version", VNPayConfig.VERSION);
@@ -164,11 +165,11 @@ public class VNPayServiceImpl implements VNPayService {
             String fieldName = itr.next();
             String fieldValue = vnp_params.get(fieldName);
             if ((fieldValue != null) && (!fieldValue.isEmpty())) {
-                //Build hash data
+                // Build hash data
                 hashData.append(fieldName);
                 hashData.append('=');
                 hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
-                //Build query
+                // Build query
                 query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII));
                 query.append('=');
                 query.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
@@ -199,7 +200,7 @@ public class VNPayServiceImpl implements VNPayService {
     public Map<String, String> processIPNFromVnpay(Map<String, String> response) {
         try {
             if (response.isEmpty()) {
-                return createIPNResponse("99","Invalid request");
+                return createIPNResponse("99", "Invalid request");
             }
             // Check sum
             checkSum(response);
@@ -305,7 +306,6 @@ public class VNPayServiceImpl implements VNPayService {
         String responseCode = response.get("vnp_ResponseCode");
         String vnpTransactionStatus = response.get("vnp_TransactionStatus");
 
-
         if (!response.containsKey("vnp_Amount")) {
             throw new RuntimeException("Thiếu tham số");
         }
@@ -358,7 +358,7 @@ public class VNPayServiceImpl implements VNPayService {
             // Create customer
             customerBookingRepository.findByBooking(booking).ifPresent(cb -> {
                 Customer customer = cb.getCustomer();
-                customer.setStatus(CustomerStatus.ACTIVE);
+                customer.setStatus(CustomerStatus.COMPLETED);
                 customerRepository.save(customer);
             });
 
