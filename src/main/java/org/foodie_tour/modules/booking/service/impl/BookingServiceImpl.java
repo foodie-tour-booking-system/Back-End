@@ -20,6 +20,7 @@ import org.foodie_tour.modules.booking.entity.Booking;
 import org.foodie_tour.modules.booking.entity.BookingLog;
 import org.foodie_tour.modules.booking.entity.RelocateBooking;
 import org.foodie_tour.modules.booking.enums.BookingStatus;
+import org.foodie_tour.modules.booking.enums.PaymentMethod;
 import org.foodie_tour.modules.booking.enums.RefundStatus;
 import org.foodie_tour.modules.booking.enums.RelocateRequestStatus;
 import org.foodie_tour.modules.booking.mapper.BookingLogMapper;
@@ -34,6 +35,7 @@ import org.foodie_tour.modules.customer.entity.CustomerBooking;
 import org.foodie_tour.modules.customer.enums.CustomerStatus;
 import org.foodie_tour.modules.customer.repository.CustomerBookingRepository;
 import org.foodie_tour.modules.customer.repository.CustomerRepository;
+import org.foodie_tour.modules.onepay.service.OnePayService;
 import org.foodie_tour.modules.mail.dto.request.SendMailRequest;
 import org.foodie_tour.modules.mail.service.MailService;
 import org.foodie_tour.modules.schedules.entity.Schedule;
@@ -57,6 +59,9 @@ public class BookingServiceImpl implements BookingService {
     BookingMapper bookingMapper;
     BookingLogMapper bookingLogMapper;
     VNPayService vnPayService;
+    CustomerRepository customerRepository;
+    CustomerBookingRepository customerBookingRepository;
+    OnePayService onePayService;
     MailService mailService;
     private final CustomerRepository customerRepository;
     private final CustomerBookingRepository customerBookingRepository;
@@ -140,9 +145,17 @@ public class BookingServiceImpl implements BookingService {
     }
 
     public String generatePaymentUrl(long bookingId, HttpServletRequest servletRequest) {
-        long totalPrice = bookingRepository.getPriceByBookingId(bookingId)
+        Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Đặt lịch không tồn tại"));
-        return vnPayService.generatePaymentUrl(new PaymentRequest(bookingId, totalPrice), servletRequest);
+
+        PaymentRequest request = new PaymentRequest(bookingId, booking.getTotalPrice());
+        if (booking.getPaymentMethod() == PaymentMethod.VNPAY) {
+            return vnPayService.generatePaymentUrl(request, servletRequest);
+        } else if (booking.getPaymentMethod() == PaymentMethod.VISA) {
+            return onePayService.generatePaymentUrl(bookingId, servletRequest);
+        }
+
+        throw new InvalidateDataException("Phương thức thanh toán không được hỗ trợ");
     }
 
     private Booking findByBookingCode(String bookingCode) {

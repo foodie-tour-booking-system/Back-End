@@ -53,6 +53,12 @@ vnpay:
   payment-success-url: ${VNP_PAYMENT_SUCCESS_URL}
   payment-failed-url: ${VNP_PAYMENT_FAILED_URL}
 
+onepay:
+  merchant-id: ${ONEPAY_MERCHANT_ID}
+  access-code: ${ONEPAY_ACCESS_CODE}
+  hash-secret: ${ONEPAY_HASH_SECRET}
+  return-url: ${ONEPAY_RETURN_URL}
+  payment-url: ${ONEPAY_PAYMENT_URL}
 auth:
   key: ${AUTH_KEY}
   issuer: ${AUTH_ISSUER}
