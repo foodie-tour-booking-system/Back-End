@@ -12,5 +12,6 @@ public interface BookingMapper {
     @Mapping(target = "schedule", ignore = true)
     Booking toBooking(BookingCreateRequest bookingCreateRequest);
 
+    @Mapping(target = "departureTime", source = "booking.schedule.departureAt")
     BookingResponse toResponse(Booking booking);
 }

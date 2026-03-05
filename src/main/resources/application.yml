@@ -59,3 +59,6 @@ onepay:
   hash-secret: ${ONEPAY_HASH_SECRET}
   return-url: ${ONEPAY_RETURN_URL}
   payment-url: ${ONEPAY_PAYMENT_URL}
+auth:
+  key: ${AUTH_KEY}
+  issuer: ${AUTH_ISSUER}
