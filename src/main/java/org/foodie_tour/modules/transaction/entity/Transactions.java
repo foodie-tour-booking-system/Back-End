@@ -20,7 +20,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table
+@Table(name = "transactions", indexes = {
+        @Index(name = "idx_trans_booking", columnList = "booking_id")
+})
 public class Transactions {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

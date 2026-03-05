@@ -21,7 +21,10 @@ import java.util.List;
 @ToString(exclude = {"schedule", "bookingLogs", "bookingTransactions"})
 @NoArgsConstructor
 @AllArgsConstructor
-@Table
+@Table(name = "bookings", indexes = {
+        @Index(name = "idx_booking_code", columnList = "booking_code"),
+        @Index(name = "idx_booking_status", columnList = "booking_status")
+})
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Booking {
     @Id
