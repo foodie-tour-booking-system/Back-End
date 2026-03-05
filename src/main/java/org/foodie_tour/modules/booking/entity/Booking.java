@@ -36,7 +36,7 @@ public class Booking {
     @Column(name = "booking_code")
     String bookingCode;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     String email;
 
     @Column(name = "phone")

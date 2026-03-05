@@ -11,7 +11,6 @@ import org.foodie_tour.modules.booking.enums.BookingStatus;
 import org.foodie_tour.modules.booking.enums.PaymentMethod;
 import org.foodie_tour.modules.booking.repository.BookingLogRepository;
 import org.foodie_tour.modules.booking.repository.BookingRepository;
-import org.foodie_tour.modules.customer.entity.CustomerBooking;
 import org.foodie_tour.modules.customer.enums.CustomerStatus;
 import org.foodie_tour.modules.customer.repository.CustomerBookingRepository;
 import org.foodie_tour.modules.customer.repository.CustomerRepository;
@@ -145,11 +144,10 @@ public class OnePayServiceImpl implements OnePayService {
             bookingRepository.save(booking);
             createBookingLog(booking, "Thanh toán Visa thành công");
 
-            // Cập nhật trạng thái customer thành ACTIVE khi thanh toán thành công
             customerBookingRepository.findByBooking(booking).ifPresent(customerBooking -> {
                 var customer = customerBooking.getCustomer();
                 if (customer != null) {
-                    customer.setStatus(CustomerStatus.ACTIVE);
+                    customer.setStatus(CustomerStatus.COMPLETED);
                     customerRepository.save(customer);
                 }
             });
