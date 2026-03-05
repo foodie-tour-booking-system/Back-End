@@ -13,7 +13,9 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "customers")
+@Table(name = "customers", indexes = {
+        @Index(name = "idx_customer_email", columnList = "email")
+})
 public class Customer {
 
     @Id

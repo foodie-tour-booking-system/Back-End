@@ -18,7 +18,9 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "feedback")
+@Table(name = "feedback", indexes = {
+        @Index(name = "idx_feedback_tour_status", columnList = "tour_id, status")
+})
 public class Feedback {
 
     @Id
