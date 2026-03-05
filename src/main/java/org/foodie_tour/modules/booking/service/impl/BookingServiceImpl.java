@@ -63,8 +63,6 @@ public class BookingServiceImpl implements BookingService {
     CustomerBookingRepository customerBookingRepository;
     OnePayService onePayService;
     MailService mailService;
-    private final CustomerRepository customerRepository;
-    private final CustomerBookingRepository customerBookingRepository;
     OtpCodeRepository otpCodeRepository;
     AuthService authService;
     RelocateBookingRepository relocateBookingRepository;
@@ -73,7 +71,15 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public BookingResponse createBooking(BookingCreateRequest request) {
         Customer customer = customerRepository.findByEmail(request.getEmail())
+                .map(existing -> {
+                    // Email đã tồn tại → cập nhật name/phone, đặt lại PENDING
+                    existing.setCustomerName(request.getCustomerName());
+                    existing.setPhone(request.getPhone());
+                    existing.setStatus(CustomerStatus.PENDING);
+                    return customerRepository.save(existing);
+                })
                 .orElseGet(() -> {
+                    // Email chưa tồn tại → tạo customer mới
                     Customer newCustomer = new Customer();
                     newCustomer.setEmail(request.getEmail());
                     newCustomer.setCustomerName(request.getCustomerName());
@@ -82,11 +88,6 @@ public class BookingServiceImpl implements BookingService {
                     return customerRepository.save(newCustomer);
                 });
 
-        //if exist
-        customer.setCustomerName(request.getCustomerName());
-        customer.setPhone(request.getPhone());
-        customerRepository.save(customer);
-
         // Create booking
         Booking booking = bookingMapper.toBooking(request);
 
@@ -94,7 +95,8 @@ public class BookingServiceImpl implements BookingService {
         booking.setBookingStatus(BookingStatus.PENDING);
 
         // Schedule & tour verify
-        Schedule schedule = scheduleRepository.findById(request.getScheduleId()).orElseThrow(() -> new ResourceNotFoundException("Lịch khởi hành không tồn tại"));
+        Schedule schedule = scheduleRepository.findById(request.getScheduleId())
+                .orElseThrow(() -> new ResourceNotFoundException("Lịch khởi hành không tồn tại"));
         booking.setSchedule(schedule);
 
         // Calculate tour price
@@ -141,7 +143,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional(readOnly = true)
     public List<BookingLogResponse> getLogsByBookingCode(String bookingCode) {
-        return bookingLogRepository.getLogsByBookingCode(bookingCode).stream().map(bookingLogMapper::toResponse).toList();
+        return bookingLogRepository.getLogsByBookingCode(bookingCode).stream().map(bookingLogMapper::toResponse)
+                .toList();
     }
 
     public String generatePaymentUrl(long bookingId, HttpServletRequest servletRequest) {
@@ -159,7 +162,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private Booking findByBookingCode(String bookingCode) {
-        return bookingRepository.findByBookingCode(bookingCode).orElseThrow(() -> new ResourceNotFoundException("Đặt lịch không tồn tại"));
+        return bookingRepository.findByBookingCode(bookingCode)
+                .orElseThrow(() -> new ResourceNotFoundException("Đặt lịch không tồn tại"));
     }
 
     @Transactional
@@ -194,7 +198,8 @@ public class BookingServiceImpl implements BookingService {
         // Send code to mail
         String[] receiver = new String[1];
         receiver[0] = booking.getEmail();
-        SendMailRequest request = new SendMailRequest(receiver,"Xác nhận dời lịch cho mã đặt lịch " + bookingCode, otp);
+        SendMailRequest request = new SendMailRequest(receiver, "Xác nhận dời lịch cho mã đặt lịch " + bookingCode,
+                otp);
         mailService.sendMail(request);
 
         // Return access token for next step
@@ -202,9 +207,10 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Transactional
-    public void createRelocateBookingRequest(String token,  RelocateBookingRequest request) {
+    public void createRelocateBookingRequest(String token, RelocateBookingRequest request) {
         // Verify otp
-        OtpCode otpEntity = otpCodeRepository.findById(request.getOtp()).orElseThrow(() -> new ResourceNotFoundException("Mã xác nhận không tồn tại"));
+        OtpCode otpEntity = otpCodeRepository.findById(request.getOtp())
+                .orElseThrow(() -> new ResourceNotFoundException("Mã xác nhận không tồn tại"));
 
         if (!otpEntity.getToken().equals(token)) {
             throw new InvalidateDataException("Mã xác nhận không đúng");
@@ -217,7 +223,8 @@ public class BookingServiceImpl implements BookingService {
             throw new InvalidateDataException("Mã xác nhận không hợp lệ");
         }
 
-        LocalDateTime departureTime = scheduleRepository.getDepartureTime(request.getScheduleId()).orElseThrow(() -> new ResourceNotFoundException("Lịch khởi hành không tồn tại"));
+        LocalDateTime departureTime = scheduleRepository.getDepartureTime(request.getScheduleId())
+                .orElseThrow(() -> new ResourceNotFoundException("Lịch khởi hành không tồn tại"));
 
         // Save request
         RelocateBooking entity = RelocateBooking.builder()
@@ -232,12 +239,14 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional(readOnly = true)
     public List<RelocateBookingResponse> getAllPendingRelocateRequest() {
-        return relocateBookingRepository.getAllByStatus(RelocateRequestStatus.PENDING).stream().map(relocateBookingMapper::toResponse).toList();
+        return relocateBookingRepository.getAllByStatus(RelocateRequestStatus.PENDING).stream()
+                .map(relocateBookingMapper::toResponse).toList();
     }
 
     @Transactional
     public BookingResponse processRelocateRequest(ProcessRelocateRequest request) {
-        RelocateBooking relocateBooking = relocateBookingRepository.findById(request.getRelocateRequestId()).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy yêu cầu"));
+        RelocateBooking relocateBooking = relocateBookingRepository.findById(request.getRelocateRequestId())
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy yêu cầu"));
 
         String bookingCode = relocateBooking.getBookingCode();
 
@@ -264,7 +273,5 @@ public class BookingServiceImpl implements BookingService {
 
         return bookingMapper.toResponse(booking);
     }
-
-
 
 }
