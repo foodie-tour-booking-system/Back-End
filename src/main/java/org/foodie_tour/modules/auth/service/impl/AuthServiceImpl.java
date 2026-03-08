@@ -8,19 +8,26 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
+import org.foodie_tour.modules.auth.repository.OtpCodeRepository;
 import org.foodie_tour.modules.auth.service.AuthService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthServiceImpl implements AuthService {
+
+    OtpCodeRepository otpCodeRepository;
 
     @Value("${auth.key}")
     @NonFinal
@@ -60,5 +67,14 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("Lỗi khi đọc dữ liệu từ token");
         }
     }
+
+    @Scheduled(cron = "0 * * * * *")
+    @Transactional
+    public void autoCleanUpOtp() {
+        List<String> otpList = otpCodeRepository.findAllExpiredOtp(LocalDateTime.now());
+        otpCodeRepository.deleteAllById(otpList);
+    }
+
+
 
 }
