@@ -9,6 +9,7 @@ import org.foodie_tour.modules.mail.service.MailService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,6 +22,7 @@ public class MailServiceImpl implements MailService {
     @NonFinal
     String SENDER;
 
+    @Async
     public void sendMail(SendMailRequest request) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setFrom(SENDER);
