@@ -8,6 +8,7 @@ import org.foodie_tour.common.exception.InvalidateDataException;
 import org.foodie_tour.common.exception.ResourceNotFoundException;
 import org.foodie_tour.common.utils.RandomCode;
 import org.foodie_tour.modules.auth.entity.OtpCode;
+import org.foodie_tour.modules.auth.enums.TokenScope;
 import org.foodie_tour.modules.auth.repository.OtpCodeRepository;
 import org.foodie_tour.modules.auth.service.AuthService;
 import org.foodie_tour.modules.booking.dto.request.BookingCreateRequest;
@@ -187,7 +188,7 @@ public class BookingServiceImpl implements BookingService {
             otp = RandomCode.generateRandomCode(6);
         } while (otpCodeRepository.existsById(otp));
 
-        String token = authService.generateRelocateRequestToken(bookingCode);
+        String token = authService.generateTokenByScope(TokenScope.RELOCATE_BOOKING, 15, bookingCode);
 
         // Save otp
         OtpCode otpEntity = new OtpCode();

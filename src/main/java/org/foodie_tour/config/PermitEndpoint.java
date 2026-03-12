@@ -14,7 +14,7 @@ public class PermitEndpoint {
     };
 
     public static String[] PUBLIC_POST_ENDPOINTS = {
-
+        "/api/auth/login"
     };
 
     public static String[] PUBLIC_GET_ENDPOINTS = {

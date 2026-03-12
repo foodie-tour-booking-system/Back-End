@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: ${APPLICATION_NAME}
+  threads:
+    virtual:
+      enabled: true
 
   mail:
     host: ${MAIL_HOST}

@@ -6,13 +6,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import javax.crypto.spec.SecretKeySpec;
 import java.util.List;
 
 @Configuration
@@ -27,18 +34,27 @@ public class SecurityConfig {
     String[] PUBLIC_PUT_URL = PermitEndpoint.PUBLIC_PUT_ENDPOINTS;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtDecoder jwtDecoder, JwtAuthenticationConverter converter) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(requests ->
-                        /*requests.requestMatchers(PUBLIC_URL).permitAll()
+                        requests.requestMatchers(PUBLIC_URL).permitAll()
                                 .requestMatchers(PUBLIC_GET_URL).permitAll()
                                 .requestMatchers(PUBLIC_POST_URL).permitAll()
                                 .requestMatchers(PUBLIC_PUT_URL).permitAll()
-                                .anyRequest().authenticated()*/
-                        requests.anyRequest().permitAll()
+                                .anyRequest().authenticated()
+                        // requests.anyRequest().permitAll()
                 );
+
+        http
+                .oauth2ResourceServer(oauth2 ->
+                        oauth2.jwt(config ->
+                                config.decoder(jwtDecoder).jwtAuthenticationConverter(converter)));
+
+        http.headers(headers -> headers
+                .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
+        );
 
         return http.build();
     }
@@ -62,5 +78,23 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    @Bean
+    public JwtDecoder jwtDecoder() {
+        SecretKeySpec keySpec = new SecretKeySpec(KEY.getBytes(), "HS256");
+        return NimbusJwtDecoder
+                .withSecretKey(keySpec)
+                .macAlgorithm(MacAlgorithm.HS256)
+                .build();
+    }
+
+    @Bean
+    public JwtAuthenticationConverter converter() {
+        JwtGrantedAuthoritiesConverter grandConverter = new JwtGrantedAuthoritiesConverter();
+        grandConverter.setAuthorityPrefix("");
+        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+        converter.setJwtGrantedAuthoritiesConverter(grandConverter);
+        return converter;
     }
 }
