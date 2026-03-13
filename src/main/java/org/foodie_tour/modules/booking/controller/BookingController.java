@@ -14,6 +14,7 @@ import org.foodie_tour.modules.booking.dto.response.RelocateBookingResponse;
 import org.foodie_tour.modules.booking.service.BookingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -68,6 +69,7 @@ public class BookingController {
     }
 
     @PutMapping("/relocate/process")
+    @PreAuthorize("hasAuthority('PROCESS_RELOCATE_BOOKING_REQUEST')")
     public ResponseEntity<BookingResponse> processRequest(@RequestBody ProcessRelocateRequest request) {
         var result = bookingService.processRelocateRequest(request);
         return ResponseEntity.status(HttpStatus.OK).body(result);

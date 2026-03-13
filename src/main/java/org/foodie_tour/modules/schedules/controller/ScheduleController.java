@@ -9,6 +9,8 @@ import org.foodie_tour.modules.schedules.service.ScheduleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import java.util.List;
+
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,6 +21,7 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping("")
+    @PreAuthorize("hasAuthority('CREATE_SCHEDULE')")
     public ResponseEntity<ScheduleResponse> createSchedule(@RequestBody ScheduleRequest request) {
         ScheduleResponse response = scheduleService.createSchedule(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -34,6 +37,7 @@ public class ScheduleController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('UPDATE_SCHEDULE')")
     public ResponseEntity<ScheduleResponse> updateSchedule(
             @PathVariable Long id,
             @RequestBody @Valid ScheduleRequest request
@@ -43,6 +47,7 @@ public class ScheduleController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('DELETE_SCHEDULE')")
     public ResponseEntity<String> deleteSchedule(@PathVariable Long id) {
         scheduleService.deleteSchedule(id);
         return ResponseEntity.ok("Xóa lịch trình thành công");

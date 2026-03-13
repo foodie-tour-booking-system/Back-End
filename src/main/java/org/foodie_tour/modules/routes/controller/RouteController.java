@@ -11,6 +11,7 @@ import org.foodie_tour.modules.routes.service.RouteService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class RouteController {
     private final RouteService routeService;
 
     @PostMapping()
+    @PreAuthorize("hasAuthority('CREATE_ROUTE')")
     public ResponseEntity<RouteResponse> createRoute(@RequestBody @Valid RouteRequest routeRequest) {
         RouteResponse response = routeService.createRoute(routeRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -43,6 +45,7 @@ public class RouteController {
     }
 
     @PutMapping("{id}")
+    @PreAuthorize("hasAuthority('UPDATE_ROUTE')")
     public ResponseEntity<RouteResponse> updateRoute(
             @PathVariable Long id,
             @RequestBody @Valid RouteRequest routeRequest) {
