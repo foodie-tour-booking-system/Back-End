@@ -128,6 +128,8 @@ public class AuthServiceImpl implements AuthService {
     private String buildScope(Role role) {
         StringJoiner scope = new StringJoiner(" ");
 
+        scope.add("ROLE_" + role.getName());
+
         role.getPermissions().forEach(permission -> {
             scope.add(permission.getName());
         });
