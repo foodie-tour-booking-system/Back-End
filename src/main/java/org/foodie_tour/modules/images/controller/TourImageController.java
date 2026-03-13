@@ -5,6 +5,7 @@ import org.foodie_tour.modules.images.dto.request.TourImageRequest;
 import org.foodie_tour.modules.images.dto.response.TourImageResponse;
 import org.foodie_tour.modules.images.service.TourImageService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class TourImageController {
     private final TourImageService tourImageService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADD_TOUR_IMAGE')")
     public ResponseEntity<TourImageResponse> addImage(
             @PathVariable Long tourId,
             @RequestBody TourImageRequest request) {
@@ -29,6 +31,7 @@ public class TourImageController {
     }
 
     @PatchMapping("/{tourImageId}/set-primary")
+    @PreAuthorize("hasAuthority('SET_PRIMARY_TOUR_IMAGE')")
     public ResponseEntity<String> setPrimary(
             @PathVariable Long tourId,
             @PathVariable Long tourImageId

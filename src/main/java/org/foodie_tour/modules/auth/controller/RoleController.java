@@ -24,28 +24,32 @@ public class RoleController {
     RoleService roleService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('CREATE_ROLE')")
     public ResponseEntity<RoleResponse> create(@Valid @RequestBody RoleCreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(roleService.create(request));
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('VIEW_ROLE')")
     public ResponseEntity<List<RoleResponse>> getAll(@RequestParam(value = "status", required = false) RoleStatus status) {
         return ResponseEntity.status(HttpStatus.OK).body(roleService.getAll(status));
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('VIEW_ROLE')")
     public ResponseEntity<RoleResponse> getById(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(roleService.getById(id));
     }
 
-    @PreAuthorize("hasAuthority('DELETE')")
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('DELETE_ROLE')")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         roleService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).body("Đã xoá");
     }
 
     @PutMapping("/{id}/permissions")
+    @PreAuthorize("hasAuthority('MAP_ROLE_PERMISSION')")
     public ResponseEntity<RoleResponse> customRolePermission(@PathVariable Long id,
                                                              @Valid @RequestBody CustomRolePermissionRequest request) {
         return ResponseEntity.status(HttpStatus.OK).body(roleService.customRolePermission(id, request));

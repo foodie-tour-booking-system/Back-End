@@ -10,6 +10,7 @@ import org.foodie_tour.modules.auth.enums.PermissionStatus;
 import org.foodie_tour.modules.auth.service.PermissionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,21 +23,25 @@ public class PermissionController {
     PermissionService permissionService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('CREATE_PERMISSION')")
     public ResponseEntity<PermissionResponse> create(@Valid @RequestBody PermissionCreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(permissionService.create(request));
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('VIEW_PERMISSION')")
     public ResponseEntity<List<PermissionResponse>> getAll(@RequestParam(value = "status", required = false) PermissionStatus status) {
         return ResponseEntity.status(HttpStatus.OK).body(permissionService.getAll(status));
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('VIEW_PERMISSION')")
     public ResponseEntity<PermissionResponse> getById(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(permissionService.getById(id));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('DELETE_PERMISSION')")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         permissionService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).body("Đã xoá");
