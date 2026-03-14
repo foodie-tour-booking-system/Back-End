@@ -2,6 +2,7 @@
 package org.foodie_tour.modules.booking.service;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.foodie_tour.modules.booking.dto.request.BookingCancelRequest;
 import org.foodie_tour.modules.booking.dto.request.BookingCreateRequest;
 import org.foodie_tour.modules.booking.dto.request.ProcessRelocateRequest;
 import org.foodie_tour.modules.booking.dto.request.RelocateBookingRequest;
@@ -20,4 +21,6 @@ public interface BookingService {
     void createRelocateBookingRequest(String token,  RelocateBookingRequest request);
     List<RelocateBookingResponse> getAllPendingRelocateRequest();
     BookingResponse processRelocateRequest(ProcessRelocateRequest request);
+    String cancelBooking(BookingCancelRequest request);
+    String approveManualRefund(String bookingCode);
 }
