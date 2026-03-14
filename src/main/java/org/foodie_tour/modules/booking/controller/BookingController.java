@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.foodie_tour.modules.booking.dto.request.BookingCancelRequest;
 import org.foodie_tour.modules.booking.dto.request.BookingCreateRequest;
 import org.foodie_tour.modules.booking.dto.request.ProcessRelocateRequest;
 import org.foodie_tour.modules.booking.dto.request.RelocateBookingRequest;
@@ -75,5 +76,17 @@ public class BookingController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    @PostMapping("/cancel")
+    public ResponseEntity<String> cancelBooking(@RequestBody BookingCancelRequest request) {
+        String result = bookingService.cancelBooking(request);
+        return ResponseEntity.ok(result);
+    }
 
+    @PutMapping("/{bookingCode}/approve-refund")
+    public ResponseEntity<String> approveManualRefund(
+            @PathVariable String bookingCode
+    ) {
+        String result = bookingService.approveManualRefund(bookingCode);
+        return ResponseEntity.ok(result);
+    }
 }
