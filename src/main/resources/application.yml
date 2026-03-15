@@ -2,11 +2,44 @@ server:
   port: ${PORT}
 
 spring:
+  autoconfigure:
+    exclude: org.springframework.ai.vectorstore.pgvector.autoconfigure.PgVectorStoreAutoConfiguration
   application:
     name: ${APPLICATION_NAME}
   threads:
     virtual:
       enabled: true
+  ai:
+    openai:
+      base-url: ${CHAT_URL}
+      api-key: ${CHAT_KEY}
+      embedding:
+        base-url: ${EMBEDDING_URL}
+        api-key: ${EMBEDDING_KEY}
+        options:
+          model: ${EMBEDDING_MODEL}
+      chat:
+        options:
+          model:
+            custom-1: ${CHAT_MODEL_1}
+            custom-2: ${CHAT_MODEL_2}
+            custom-3: ${CHAT_MODEL_3}
+            custom-4: ${CHAT_MODEL_4}
+            custom-5: ${CHAT_MODEL_5}
+          temperature: 0.7
+    retry:
+      max-attempts: 10
+      backoff:
+        initial-interval: 2s
+        max-interval: 120s
+        multiplier: 5
+      on-client-errors: false
+      exclude-on-http-codes:
+        - 400
+        - 401
+        - 403
+        - 404
+      on-http-codes:
 
   mail:
     host: ${MAIL_HOST}

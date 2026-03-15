@@ -44,7 +44,6 @@ public class SecurityConfig {
                                 .requestMatchers(PUBLIC_POST_URL).permitAll()
                                 .requestMatchers(PUBLIC_PUT_URL).permitAll()
                                 .anyRequest().authenticated()
-                        // requests.anyRequest().permitAll()
                 );
 
         http
@@ -69,7 +68,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(List.of(
                 "http://localhost:*",
-                "https://x100auction.id.vn"
+                "https://felixiter.xyz"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
