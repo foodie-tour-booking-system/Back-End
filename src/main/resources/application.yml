@@ -5,7 +5,7 @@ spring:
   autoconfigure:
     exclude: org.springframework.ai.vectorstore.pgvector.autoconfigure.PgVectorStoreAutoConfiguration
   application:
-    name: ${APPLICATION_NAME}
+    name: foodie
   threads:
     virtual:
       enabled: true

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class PermitEndpoint {
     public static String[] PUBLIC_ENDPOINTS = {
+            "/api/momo/**",
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/swagger-ui.html",
