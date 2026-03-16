@@ -7,7 +7,9 @@ import lombok.experimental.FieldDefaults;
 import org.foodie_tour.modules.booking.enums.BookingStatus;
 import org.foodie_tour.modules.booking.enums.PaymentMethod;
 import org.foodie_tour.modules.booking.enums.RefundStatus;
+import org.foodie_tour.modules.routes.entity.Route;
 import org.foodie_tour.modules.schedules.entity.Schedule;
+import org.foodie_tour.modules.tours.entity.Tour;
 import org.foodie_tour.modules.transaction.entity.Transactions;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -35,6 +37,15 @@ public class Booking {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "schedule_id")
     Schedule schedule;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "route_id")
+    Route route;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tour_id")
+    Tour tour;
+
 
     @Column(name = "booking_code")
     String bookingCode;

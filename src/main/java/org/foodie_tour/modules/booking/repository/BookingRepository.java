@@ -16,4 +16,5 @@ public interface BookingRepository extends JpaRepository<Booking,Long>, JpaSpeci
     Optional<Long> getPriceByBookingId(@Param(value = "bookingId") long bookingId);
 
     Optional<Booking> findByBookingCode(String bookingCode);
+    Optional<Booking> findByEmail(String email);
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.foodie_tour.modules.booking.enums.PaymentMethod;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -14,11 +15,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BookingCreateRequest {
+    long tourId;
     long scheduleId;
+    private LocalDate departureDate;
     String customerName;
     String email;
     String phone;
-    LocalDateTime dateTime;
     int adultCount;
     int childrenCount;
     String pickupLocation;
