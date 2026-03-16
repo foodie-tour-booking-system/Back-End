@@ -9,6 +9,7 @@ import org.foodie_tour.modules.booking.dto.request.RelocateBookingRequest;
 import org.foodie_tour.modules.booking.dto.response.BookingLogResponse;
 import org.foodie_tour.modules.booking.dto.response.BookingResponse;
 import org.foodie_tour.modules.booking.dto.response.RelocateBookingResponse;
+import org.foodie_tour.modules.booking.enums.PaymentMethod;
 
 import java.util.List;
 
@@ -23,4 +24,5 @@ public interface BookingService {
     BookingResponse processRelocateRequest(ProcessRelocateRequest request);
     String cancelBooking(BookingCancelRequest request);
     String approveManualRefund(String bookingCode);
+    BookingResponse completeOnTourPayment(String bookingCode, PaymentMethod method);
 }

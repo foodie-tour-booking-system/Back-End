@@ -1,4 +1,4 @@
-package org.foodie_tour.modules.vnpay.service.Impl;
+package org.foodie_tour.modules.vnpay.service.impl;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
@@ -84,10 +84,14 @@ public class VNPayServiceImpl implements VNPayService {
             throw new ResourceNotFoundException("Đặt lịch không tồn tại");
         }
 
-        long price = bookingRepository.getPriceByBookingId(request.getBookingId())
+        Booking booking = bookingRepository.findById(request.getBookingId())
                 .orElseThrow(() -> new ResourceNotFoundException("Đặt lịch không tồn tại"));
 
-        if (price != request.getAmount()) {
+        long expectedAmount = booking.isDeposit()
+                ? (long) (booking.getTotalPrice() * 0.3)
+                : booking.getTotalPrice();
+
+        if (expectedAmount != request.getAmount()) {
             throw new InvalidateDataException("Số tiền thanh toán không hợp lệ");
         }
 
@@ -97,14 +101,23 @@ public class VNPayServiceImpl implements VNPayService {
     }
 
     public String generatePaymentUrl(PaymentRequest request, HttpServletRequest servletRequest) {
+        Booking booking = bookingRepository.findById(request.getBookingId())
+                .orElseThrow(() -> new ResourceNotFoundException("Đặt lịch không tồn tại"));
+
+        long finalPaymentAmount = booking.isDeposit()
+                ? (long) (booking.getTotalPrice() * 0.3)
+                : booking.getTotalPrice();
+
+        request.setAmount(finalPaymentAmount);
         String ipAddress = getIpAddress(servletRequest);
         verifyPaymentRequest(request, ipAddress);
+
         try {
             Map<String, String> vnp_params = buildPaymentParams(request, ipAddress);
             String queryUrl = createQueryUrl(vnp_params);
             return vnPayConfig.getPayUrl() + "?" + queryUrl;
         } catch (Exception e) {
-            throw new RuntimeException("Lỗi khởi tạo đường dẫn thanh toán");
+            throw new RuntimeException("Lỗi khởi tạo đường dẫn thanh toán: " + e.getMessage());
         }
     }
 
@@ -318,7 +331,11 @@ public class VNPayServiceImpl implements VNPayService {
 
         long amount = Long.parseLong(response.get("vnp_Amount")) / 100;
 
-        if (amount != booking.getTotalPrice()) {
+        long expectedAmount = booking.isDeposit()
+                ? (long) (booking.getTotalPrice() * 0.3)
+                : booking.getTotalPrice();
+
+        if (amount != expectedAmount) {
             throw new InvalidateDataException("Thông tin thanh toán không trùng khớp");
         }
         String vnpTransactionNo = response.get("vnp_TransactionNo");
@@ -355,12 +372,17 @@ public class VNPayServiceImpl implements VNPayService {
             transactionStatus = TransactionStatus.SUCCESS;
             logDescription = "Thanh toán thành công";
 
-            // Create customer
+            // Update customer
             customerBookingRepository.findByBooking(booking).ifPresent(cb -> {
                 Customer customer = cb.getCustomer();
                 customer.setStatus(CustomerStatus.COMPLETED);
                 customerRepository.save(customer);
             });
+
+            booking.setAmountPaid(amount);
+            if (!booking.isDeposit()) {
+                booking.setRemainingAmount(0L);
+            }
 
             returnUrl = SUCCESS_URL;
         } else {

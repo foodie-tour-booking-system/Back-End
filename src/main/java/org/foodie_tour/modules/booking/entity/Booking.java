@@ -46,7 +46,6 @@ public class Booking {
     @JoinColumn(name = "tour_id")
     Tour tour;
 
-
     @Column(name = "booking_code")
     String bookingCode;
 
@@ -96,6 +95,19 @@ public class Booking {
     @Column(name = "payment_method")
     @Enumerated(EnumType.STRING)
     PaymentMethod paymentMethod;
+
+    @Column(name = "is_deposit")
+    Boolean deposit;
+
+    public boolean isDeposit() {
+        return deposit != null && deposit;
+    }
+
+    @Column(name = "amount_paid")
+    Long amountPaid;
+
+    @Column(name = "remaining_amount")
+    Long remainingAmount;
 
     @OneToMany(mappedBy = "booking", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonManagedReference
