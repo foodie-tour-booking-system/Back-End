@@ -12,6 +12,7 @@ import org.foodie_tour.modules.booking.dto.request.RelocateBookingRequest;
 import org.foodie_tour.modules.booking.dto.response.BookingLogResponse;
 import org.foodie_tour.modules.booking.dto.response.BookingResponse;
 import org.foodie_tour.modules.booking.dto.response.RelocateBookingResponse;
+import org.foodie_tour.modules.booking.enums.PaymentMethod;
 import org.foodie_tour.modules.booking.service.BookingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -87,6 +88,16 @@ public class BookingController {
             @PathVariable String bookingCode
     ) {
         String result = bookingService.approveManualRefund(bookingCode);
+        return ResponseEntity.ok(result);
+    }
+
+    @PutMapping("/{bookingCode}/complete-payment")
+//    @PreAuthorize("hasAuthority('APPROVE_PAYMENT')")
+    public ResponseEntity<BookingResponse> completePayment(
+            @PathVariable String bookingCode,
+            @RequestParam PaymentMethod method
+    ) {
+        var result = bookingService.completeOnTourPayment(bookingCode, method);
         return ResponseEntity.ok(result);
     }
 }

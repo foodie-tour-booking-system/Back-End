@@ -43,8 +43,10 @@ public class OnePayServiceImpl implements OnePayService {
 
     @Override
     public String generatePaymentUrl(long bookingId, HttpServletRequest request) {
-        long price = bookingRepository.getPriceByBookingId(bookingId)
+        Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Đặt lịch không tồn tại"));
+
+        long amountToPay = booking.isDeposit() ? (long) (booking.getTotalPrice() * 0.3) : booking.getTotalPrice();
 
         TreeMap<String, String> vpcParams = new TreeMap<>();
         vpcParams.put("vpc_Version", "2");
@@ -53,7 +55,7 @@ public class OnePayServiceImpl implements OnePayService {
         vpcParams.put("vpc_AccessCode", onePayConfig.getAccessCode());
         vpcParams.put("vpc_MerchTxnRef", "Booking-" + bookingId + "-" + System.currentTimeMillis());
         vpcParams.put("vpc_OrderInfo", "Booking-" + bookingId);
-        vpcParams.put("vpc_Amount", String.valueOf(price * 100));
+        vpcParams.put("vpc_Amount", String.valueOf(amountToPay * 100));
         vpcParams.put("vpc_ReturnURL", onePayConfig.getReturnUrl());
         vpcParams.put("vpc_Locale", "vn");
         vpcParams.put("vpc_IpAddr", getIpAddress(request));

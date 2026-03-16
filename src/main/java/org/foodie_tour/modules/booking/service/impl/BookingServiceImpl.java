@@ -84,14 +84,12 @@ public class BookingServiceImpl implements BookingService {
     public BookingResponse createBooking(BookingCreateRequest request) {
         Customer customer = customerRepository.findByEmail(request.getEmail())
                 .map(existing -> {
-
                     existing.setCustomerName(request.getCustomerName());
                     existing.setPhone(request.getPhone());
                     existing.setStatus(CustomerStatus.PENDING);
                     return customerRepository.save(existing);
                 })
                 .orElseGet(() -> {
-
                     Customer newCustomer = new Customer();
                     newCustomer.setEmail(request.getEmail());
                     newCustomer.setCustomerName(request.getCustomerName());
@@ -110,9 +108,6 @@ public class BookingServiceImpl implements BookingService {
 
         Tour tour = template.getTour();
         if (tour == null) throw new ResourceNotFoundException("Tour không tồn tại");
-
-
-
 
         Schedule actualSchedule = scheduleRepository.findActualSchedule(tour, actualDepartureAt)
                 .orElseGet(() -> {
@@ -140,13 +135,25 @@ public class BookingServiceImpl implements BookingService {
         booking.setRoute(actualSchedule.getRoute());
         booking.setBookingStatus(BookingStatus.PENDING);
         booking.setRefundStatus(RefundStatus.INACTIVE);
+        booking.setDeposit(request.isDeposit());
 
         long adultPrice = tour.getBasePriceAdult() * request.getAdultCount();
         long childPrice = tour.getBasePriceChild() * request.getChildrenCount();
-        booking.setTotalPrice(adultPrice + childPrice);
+        long totalPrice = adultPrice + childPrice;
+        booking.setTotalPrice(totalPrice);
+
+        if (request.isDeposit()) {
+            long depositAmount = (long) (totalPrice * 0.3); // 30% cọc
+            booking.setAmountPaid(0L);
+            booking.setRemainingAmount(totalPrice - depositAmount);
+        } else {
+            booking.setAmountPaid(0L);
+            booking.setRemainingAmount(0L);
+        }
 
         if (booking.getBookingCode() == null) {
-            booking.setBookingCode(RandomCode.generateRandomCode(10));
+            String bookingCode = RandomCode.generateRandomCode(10);
+            booking.setBookingCode(bookingCode);
         }
 
         BookingLog log = BookingLog.builder()
@@ -401,5 +408,10 @@ public class BookingServiceImpl implements BookingService {
         bookingRepository.save(booking);
 
         return "Yêu cầu của bạn đã được phê duyệt.";
+    }
+
+    @Override
+    public BookingResponse completeOnTourPayment(String bookingCode, PaymentMethod method) {
+        return null;
     }
 }
