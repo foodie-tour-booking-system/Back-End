@@ -2,7 +2,12 @@ package org.foodie_tour.config;
 
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
+import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.memory.ChatMemoryRepository;
+import org.springframework.ai.chat.memory.InMemoryChatMemoryRepository;
+import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.openai.OpenAiChatOptions;
@@ -49,6 +54,19 @@ public class ChatClientConfig {
         return OpenAiApi.builder()
                 .apiKey(API_KEY)
                 .baseUrl(CHAT_URL)
+                .build();
+    }
+
+    @Bean
+    public ChatMemoryRepository chatMemoryRepository() {
+        return new InMemoryChatMemoryRepository();
+    }
+
+    @Bean
+    public ChatMemory chatMemory(ChatMemoryRepository chatMemoryRepository) {
+        return MessageWindowChatMemory.builder()
+                .chatMemoryRepository(chatMemoryRepository)
+                .maxMessages(20)
                 .build();
     }
 
@@ -128,37 +146,42 @@ public class ChatClientConfig {
     }
 
     @Bean
-    public ChatClient LLAMA3_8B(VectorStore vectorStore, @Qualifier(value = "llama38bModel") OpenAiChatModel model) {
+    public ChatClient LLAMA3_8B(VectorStore vectorStore, @Qualifier(value = "llama38bModel") OpenAiChatModel model, ChatMemory chatMemory) {
         return ChatClient.builder(model)
                 .defaultAdvisors(QuestionAnswerAdvisor.builder(vectorStore).build())
+                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .build();
     }
 
     @Bean
-    public ChatClient LLAMA3_70B(VectorStore vectorStore, @Qualifier(value = "llama370bModel") OpenAiChatModel model) {
+    public ChatClient LLAMA3_70B(VectorStore vectorStore, @Qualifier(value = "llama370bModel") OpenAiChatModel model, ChatMemory chatMemory) {
         return ChatClient.builder(model)
                 .defaultAdvisors(QuestionAnswerAdvisor.builder(vectorStore).build())
+                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .build();
     }
 
     @Bean
-    public ChatClient GPT_OSS_120B(VectorStore vectorStore, @Qualifier(value = "gptOss120bModel") OpenAiChatModel model) {
+    public ChatClient GPT_OSS_120B(VectorStore vectorStore, @Qualifier(value = "gptOss120bModel") OpenAiChatModel model, ChatMemory chatMemory) {
         return ChatClient.builder(model)
                 .defaultAdvisors(QuestionAnswerAdvisor.builder(vectorStore).build())
+                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .build();
     }
 
     @Bean
-    public ChatClient GPT_OSS_20B(VectorStore vectorStore, @Qualifier(value = "gptOss20bModel") OpenAiChatModel model) {
+    public ChatClient GPT_OSS_20B(VectorStore vectorStore, @Qualifier(value = "gptOss20bModel") OpenAiChatModel model, ChatMemory chatMemory) {
         return ChatClient.builder(model)
                 .defaultAdvisors(QuestionAnswerAdvisor.builder(vectorStore).build())
+                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .build();
     }
 
     @Bean
-    public ChatClient LLAMA4_17B(VectorStore vectorStore, @Qualifier(value = "llama417bModel") OpenAiChatModel model) {
+    public ChatClient LLAMA4_17B(VectorStore vectorStore, @Qualifier(value = "llama417bModel") OpenAiChatModel model, ChatMemory chatMemory) {
         return ChatClient.builder(model)
                 .defaultAdvisors(QuestionAnswerAdvisor.builder(vectorStore).build())
+                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .build();
     }
 }

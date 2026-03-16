@@ -22,6 +22,7 @@ public class PermitEndpoint {
     public static String[] PUBLIC_POST_ENDPOINTS = {
             "/api/auth/login",
             "/api/rag-chat",
+            "/api/rag-chat/prompt",
     };
 
     public static String[] PUBLIC_GET_ENDPOINTS = {

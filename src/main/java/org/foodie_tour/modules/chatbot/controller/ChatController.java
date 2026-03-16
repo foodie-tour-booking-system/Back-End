@@ -21,6 +21,12 @@ public class ChatController {
     ChatService chatService;
 
     @PostMapping
+    public ResponseEntity<String> createNewConversation() {
+        var result = chatService.createNewConversation();
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
+    @PostMapping("/prompt")
     public ResponseEntity<ChatBotResponse> chat(@RequestBody ChatBotRequest request){
         var result = chatService.chat(request);
         return ResponseEntity.status(HttpStatus.OK).body(result);
