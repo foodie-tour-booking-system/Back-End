@@ -4,7 +4,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.foodie_tour.modules.schedules.dto.request.ScheduleRequest;
 import org.foodie_tour.modules.schedules.dto.response.ScheduleResponse;
+import org.foodie_tour.modules.schedules.entity.Schedule;
 import org.foodie_tour.modules.schedules.enums.ScheduleStatus;
+import org.foodie_tour.modules.schedules.mapper.ScheduleMapper;
+import org.foodie_tour.modules.schedules.repository.ScheduleRepository;
 import org.foodie_tour.modules.schedules.service.ScheduleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
+    private final ScheduleMapper scheduleMapper;
+    private final ScheduleRepository scheduleRepository;
 
     @PostMapping("")
     @PreAuthorize("hasAuthority('CREATE_SCHEDULE')")
@@ -51,5 +56,14 @@ public class ScheduleController {
     public ResponseEntity<String> deleteSchedule(@PathVariable Long id) {
         scheduleService.deleteSchedule(id);
         return ResponseEntity.ok("Xóa lịch trình thành công");
+    }
+
+    @PostMapping("/template")
+    public ResponseEntity<String> createTemplate(@RequestBody ScheduleRequest request) {
+        Schedule template = scheduleMapper.toEntity(request);
+        template.setIsTemplate(true);
+        template.setScheduleStatus(ScheduleStatus.ACTIVE);
+        scheduleRepository.save(template);
+        return ResponseEntity.ok("Tạo khung giờ mẫu thành công");
     }
 }

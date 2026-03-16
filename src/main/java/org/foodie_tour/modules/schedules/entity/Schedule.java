@@ -4,11 +4,15 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.foodie_tour.modules.booking.entity.Booking;
 import org.foodie_tour.modules.routes.entity.Route;
 import org.foodie_tour.modules.schedules.enums.ScheduleStatus;
 import org.foodie_tour.modules.tours.entity.Tour;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -41,13 +45,18 @@ public class Schedule {
     @Enumerated(EnumType.STRING)
     private ScheduleStatus scheduleStatus;
 
+    @Column(name = "is_template", nullable = false)
+    private Boolean isTemplate = false;
+
     @Column(name = "departure_at")
     private LocalDateTime departureAt;
 
     @Column(name = "created_at")
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -57,4 +66,7 @@ public class Schedule {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "route_id")
     private Route route;
+
+    @OneToMany(mappedBy = "schedule")
+    private List<Booking> bookings;
 }

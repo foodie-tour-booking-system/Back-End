@@ -41,6 +41,7 @@ import org.foodie_tour.modules.onepay.service.OnePayService;
 import org.foodie_tour.modules.mail.dto.request.SendMailRequest;
 import org.foodie_tour.modules.mail.service.MailService;
 import org.foodie_tour.modules.schedules.entity.Schedule;
+import org.foodie_tour.modules.schedules.enums.ScheduleStatus;
 import org.foodie_tour.modules.schedules.repository.ScheduleRepository;
 import org.foodie_tour.modules.system.entity.SystemConfig;
 import org.foodie_tour.modules.system.repository.SystemConfigRepository;
@@ -55,6 +56,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -75,21 +77,21 @@ public class BookingServiceImpl implements BookingService {
     AuthService authService;
     RelocateBookingRepository relocateBookingRepository;
     RelocateBookingMapper relocateBookingMapper;
-    private final TransactionsRepository transactionsRepository;
     private final SystemConfigRepository systemConfigRepository;
+    private final TransactionsRepository transactionsRepository;
 
     @Transactional
     public BookingResponse createBooking(BookingCreateRequest request) {
         Customer customer = customerRepository.findByEmail(request.getEmail())
                 .map(existing -> {
-                    // Email đã tồn tại → cập nhật name/phone, đặt lại PENDING
+
                     existing.setCustomerName(request.getCustomerName());
                     existing.setPhone(request.getPhone());
                     existing.setStatus(CustomerStatus.PENDING);
                     return customerRepository.save(existing);
                 })
                 .orElseGet(() -> {
-                    // Email chưa tồn tại → tạo customer mới
+
                     Customer newCustomer = new Customer();
                     newCustomer.setEmail(request.getEmail());
                     newCustomer.setCustomerName(request.getCustomerName());
@@ -98,51 +100,76 @@ public class BookingServiceImpl implements BookingService {
                     return customerRepository.save(newCustomer);
                 });
 
-        // Create booking
-        Booking booking = bookingMapper.toBooking(request);
+        Schedule template = scheduleRepository.findById(request.getScheduleId())
+                .orElseThrow(() -> new ResourceNotFoundException("Khung giờ khởi hành không tồn tại"));
 
-        // Default status is pending
+        LocalDateTime actualDepartureAt = LocalDateTime.of(
+                request.getDepartureDate(),
+                template.getDepartureAt().toLocalTime()
+        );
+
+        Tour tour = template.getTour();
+        if (tour == null) throw new ResourceNotFoundException("Tour không tồn tại");
+
+
+
+
+        Schedule actualSchedule = scheduleRepository.findActualSchedule(tour, actualDepartureAt)
+                .orElseGet(() -> {
+                    Schedule newSchedule = new Schedule();
+                    newSchedule.setTour(tour);
+                    newSchedule.setDepartureAt(actualDepartureAt);
+                    newSchedule.setIsTemplate(false);
+                    newSchedule.setScheduleStatus(ScheduleStatus.ACTIVE);
+                    newSchedule.setMaxPax(template.getMaxPax());
+                    newSchedule.setMinPax(template.getMinPax());
+                    newSchedule.setScheduleDescription(template.getScheduleDescription());
+                    newSchedule.setRoute(template.getRoute());
+                    return scheduleRepository.save(newSchedule);
+                });
+
+        Booking booking = bookingRepository.findByEmail(request.getEmail())
+                .map(existing -> {
+                    bookingMapper.updateBooking(request, existing);
+                    return existing;
+                })
+                .orElseGet(() -> bookingMapper.toBooking(request));
+
+        booking.setSchedule(actualSchedule);
+        booking.setTour(tour);
+        booking.setRoute(actualSchedule.getRoute());
         booking.setBookingStatus(BookingStatus.PENDING);
-
-        // Schedule & tour verify
-        Schedule schedule = scheduleRepository.findById(request.getScheduleId())
-                .orElseThrow(() -> new ResourceNotFoundException("Lịch khởi hành không tồn tại"));
-        booking.setSchedule(schedule);
-
-        // Calculate tour price
-        Tour tour = schedule.getTour();
-        if (tour != null) {
-            long adultPrice = tour.getBasePriceAdult() * request.getAdultCount();
-            long childPrice = tour.getBasePriceChild() * request.getChildrenCount();
-
-            long total = adultPrice + childPrice;
-            booking.setTotalPrice(total);
-        } else {
-            throw new ResourceNotFoundException("Lịch trình không tồn tại");
-        }
-
-        // Booking code
-        String bookingCode = RandomCode.generateRandomCode(10);
-        booking.setBookingCode(bookingCode);
-
-        // Default refund status is inactive
         booking.setRefundStatus(RefundStatus.INACTIVE);
 
-        // Create log
+        long adultPrice = tour.getBasePriceAdult() * request.getAdultCount();
+        long childPrice = tour.getBasePriceChild() * request.getChildrenCount();
+        booking.setTotalPrice(adultPrice + childPrice);
+
+        if (booking.getBookingCode() == null) {
+            booking.setBookingCode(RandomCode.generateRandomCode(10));
+        }
+
         BookingLog log = BookingLog.builder()
                 .booking(booking)
-                .description("Đặt lịch thành công")
+                .description("Đặt tour thành công. Khởi hành: " + actualDepartureAt)
+                .bookingStatus(booking.getBookingStatus())
                 .build();
 
+        if (booking.getBookingLogs() == null) booking.setBookingLogs(new ArrayList<>());
         booking.getBookingLogs().add(log);
 
         bookingRepository.save(booking);
 
-        CustomerBooking customerBooking = new CustomerBooking();
+        CustomerBooking customerBooking = customerBookingRepository.findByBooking(booking)
+                .orElseGet(() -> {
+                    CustomerBooking newLink = new CustomerBooking();
+                    newLink.setBooking(booking);
+                    return newLink;
+                });
         customerBooking.setCustomer(customer);
-        customerBooking.setBooking(booking);
         customerBooking.setIsMain(true);
         customerBookingRepository.save(customerBooking);
+
         return bookingMapper.toResponse(booking);
     }
 

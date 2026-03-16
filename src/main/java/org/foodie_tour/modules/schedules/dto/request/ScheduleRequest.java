@@ -30,4 +30,5 @@ public class ScheduleRequest {
     private Integer maxPax;
     private LocalDateTime departureAt;
     private ScheduleStatus scheduleStatus;
+    private Boolean isTemplate;
 }
