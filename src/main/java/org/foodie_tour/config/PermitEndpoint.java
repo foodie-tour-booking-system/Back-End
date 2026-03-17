@@ -17,6 +17,7 @@ public class PermitEndpoint {
             "/api/mail/send",
             "/api/onepay/**",
             "/api/payment/vnpay/**",
+            "/api/tour/{tourId}/images/**",
     };
 
     public static String[] PUBLIC_POST_ENDPOINTS = {

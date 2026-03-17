@@ -97,7 +97,7 @@ public class Booking {
     PaymentMethod paymentMethod;
 
     @Column(name = "is_deposit")
-    Boolean deposit;
+    Boolean isDeposit;
 
     @Column(name = "amount_paid")
     Long amountPaid;
