@@ -1,0 +1,42 @@
+package org.foodie_tour.modules.images.controller;
+
+import lombok.RequiredArgsConstructor;
+import org.foodie_tour.modules.images.dto.request.TourImageRequest;
+import org.foodie_tour.modules.images.dto.response.TourImageResponse;
+import org.foodie_tour.modules.images.service.TourImageService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/tour/{tourId}/images")
+@RequiredArgsConstructor
+public class TourImageController {
+
+    private final TourImageService tourImageService;
+
+    @PostMapping
+    @PreAuthorize("hasAuthority('ADD_TOUR_IMAGE')")
+    public ResponseEntity<TourImageResponse> addImage(
+            @PathVariable Long tourId,
+            @RequestBody TourImageRequest request) {
+        return ResponseEntity.ok(tourImageService.addImageToTour(tourId, request));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TourImageResponse>> getImages(@PathVariable Long tourId) {
+        return ResponseEntity.ok(tourImageService.getTourImages(tourId));
+    }
+
+    @PatchMapping("/{tourImageId}/set-primary")
+    @PreAuthorize("hasAuthority('SET_PRIMARY_TOUR_IMAGE')")
+    public ResponseEntity<String> setPrimary(
+            @PathVariable Long tourId,
+            @PathVariable Long tourImageId
+    ) {
+        tourImageService.setPrimaryImage(tourId, tourImageId);
+        return ResponseEntity.ok("Chỉnh sửa hình ảnh thành công");
+    }
+}

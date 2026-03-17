@@ -2,8 +2,59 @@ server:
   port: ${PORT}
 
 spring:
+  autoconfigure:
+    exclude: org.springframework.ai.vectorstore.pgvector.autoconfigure.PgVectorStoreAutoConfiguration
   application:
     name: ${APPLICATION_NAME}
+  threads:
+    virtual:
+      enabled: true
+  ai:
+    openai:
+      base-url: ${CHAT_URL}
+      api-key: ${CHAT_KEY}
+      embedding:
+        base-url: ${EMBEDDING_URL}
+        api-key: ${EMBEDDING_KEY}
+        options:
+          model: ${EMBEDDING_MODEL}
+      chat:
+        options:
+          model:
+            custom-1: ${CHAT_MODEL_1}
+            custom-2: ${CHAT_MODEL_2}
+            custom-3: ${CHAT_MODEL_3}
+            custom-4: ${CHAT_MODEL_4}
+            custom-5: ${CHAT_MODEL_5}
+          temperature: 0.7
+    retry:
+      max-attempts: 10
+      backoff:
+        initial-interval: 2s
+        max-interval: 120s
+        multiplier: 5
+      on-client-errors: false
+      exclude-on-http-codes:
+        - 400
+        - 401
+        - 403
+        - 404
+      on-http-codes:
+
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USER}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
 
   datasource:
     url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?options=-c%20TimeZone=UTC
@@ -15,8 +66,44 @@ spring:
     database: POSTGRESQL
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: update
+      ddl-auto:  update
     show-sql: false
     properties:
       hibernate:
         format_sql: false
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
+      data-locations:
+        - classpath:rbac/insert-role.sql
+        - classpath:rbac/insert-permission.sql
+        - classpath:rbac/insert-role-permission.sql
+
+aws:
+  s3:
+    region: ${REGION}
+    bucket: ${BUCKET}
+    access-key: ${ACCESS_KEY}
+    secret-key: ${SECRET_KEY}
+
+vnpay:
+  tmn-code: ${VNP_TMN}
+  hash-secret: ${VNP_HASH}
+  payment-url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+  return-url: ${VNP_RETURN_URL}
+  ipn-url: ${VNP_IPN_URL}
+  expired-time: ${VNP_EXPIRE_TIME}
+  payment-success-url: ${VNP_PAYMENT_SUCCESS_URL}
+  payment-failed-url: ${VNP_PAYMENT_FAILED_URL}
+
+onepay:
+  merchant-id: ${ONEPAY_MERCHANT_ID}
+  access-code: ${ONEPAY_ACCESS_CODE}
+  hash-secret: ${ONEPAY_HASH_SECRET}
+  return-url: ${ONEPAY_RETURN_URL}
+  payment-url: ${ONEPAY_PAYMENT_URL}
+auth:
+  key: ${AUTH_KEY}
+  issuer: ${AUTH_ISSUER}

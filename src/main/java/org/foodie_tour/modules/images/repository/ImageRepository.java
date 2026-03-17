@@ -1,0 +1,14 @@
+package org.foodie_tour.modules.images.repository;
+
+import org.foodie_tour.modules.images.entity.Image;
+import org.foodie_tour.modules.images.enums.ImageStatus;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
+
+public interface ImageRepository extends JpaRepository<Image, Long> {
+    List<Image> findImageByImageStatus(ImageStatus imageStatus);
+}
