@@ -46,7 +46,7 @@ public class OnePayServiceImpl implements OnePayService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Đặt lịch không tồn tại"));
 
-        long amountToPay = booking.isDeposit() ? (long) (booking.getTotalPrice() * 0.3) : booking.getTotalPrice();
+        long amountToPay = booking.getDeposit() ? (long) (booking.getTotalPrice() * 0.3) : booking.getTotalPrice();
 
         TreeMap<String, String> vpcParams = new TreeMap<>();
         vpcParams.put("vpc_Version", "2");
