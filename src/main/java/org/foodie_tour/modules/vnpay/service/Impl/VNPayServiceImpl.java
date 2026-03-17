@@ -87,7 +87,7 @@ public class VNPayServiceImpl implements VNPayService {
         Booking booking = bookingRepository.findById(request.getBookingId())
                 .orElseThrow(() -> new ResourceNotFoundException("Đặt lịch không tồn tại"));
 
-        long expectedAmount = booking.isDeposit()
+        long expectedAmount = booking.getIsDeposit()
                 ? (long) (booking.getTotalPrice() * 0.3)
                 : booking.getTotalPrice();
 
@@ -104,7 +104,7 @@ public class VNPayServiceImpl implements VNPayService {
         Booking booking = bookingRepository.findById(request.getBookingId())
                 .orElseThrow(() -> new ResourceNotFoundException("Đặt lịch không tồn tại"));
 
-        long finalPaymentAmount = booking.isDeposit()
+        long finalPaymentAmount = booking.getIsDeposit()
                 ? (long) (booking.getTotalPrice() * 0.3)
                 : booking.getTotalPrice();
 
@@ -331,7 +331,7 @@ public class VNPayServiceImpl implements VNPayService {
 
         long amount = Long.parseLong(response.get("vnp_Amount")) / 100;
 
-        long expectedAmount = booking.isDeposit()
+        long expectedAmount = booking.getIsDeposit()
                 ? (long) (booking.getTotalPrice() * 0.3)
                 : booking.getTotalPrice();
 
@@ -380,7 +380,7 @@ public class VNPayServiceImpl implements VNPayService {
             });
 
             booking.setAmountPaid(amount);
-            if (!booking.isDeposit()) {
+            if (!booking.getIsDeposit()) {
                 booking.setRemainingAmount(0L);
             }
 

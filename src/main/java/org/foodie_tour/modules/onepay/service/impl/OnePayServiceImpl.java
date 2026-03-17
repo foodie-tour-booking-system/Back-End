@@ -25,6 +25,7 @@ import org.springframework.util.StringUtils;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.TreeMap;
@@ -46,7 +47,7 @@ public class OnePayServiceImpl implements OnePayService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Đặt lịch không tồn tại"));
 
-        long amountToPay = booking.isDeposit() ? (long) (booking.getTotalPrice() * 0.3) : booking.getTotalPrice();
+        long amountToPay = booking.getIsDeposit() ? (long) (booking.getTotalPrice() * 0.3) : booking.getTotalPrice();
 
         TreeMap<String, String> vpcParams = new TreeMap<>();
         vpcParams.put("vpc_Version", "2");
@@ -72,7 +73,7 @@ public class OnePayServiceImpl implements OnePayService {
         String queryString = vpcParams.entrySet().stream()
                 .map(entry -> {
                     try {
-                        return entry.getKey() + "=" + java.net.URLEncoder.encode(entry.getValue(),
+                        return entry.getKey() + "=" + URLEncoder.encode(entry.getValue(),
                                 StandardCharsets.UTF_8.toString());
                     } catch (Exception e) {
                         return entry.getKey() + "=" + entry.getValue();
