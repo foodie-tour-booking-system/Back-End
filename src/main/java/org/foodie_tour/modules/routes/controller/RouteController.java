@@ -52,4 +52,10 @@ public class RouteController {
         RouteResponse response = routeService.updateRouteById(id, routeRequest);
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteRoute(@PathVariable Long id) {
+        routeService.deleteRoute(id);
+        return ResponseEntity.ok("Xóa tuyến đường thành công");
+    }
 }
