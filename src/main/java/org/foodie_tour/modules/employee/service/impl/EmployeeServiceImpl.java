@@ -167,4 +167,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setPassword(passwordEncoder.encode(request.getNewPassword()));
         employeeRepository.save(employee);
     }
+
+    @Override
+    public void deleteEmployee(Long id) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy nhân viên"));
+
+        employee.setStatus(EmployeeStatus.DELETED);
+        employeeRepository.save(employee);
+    }
 }

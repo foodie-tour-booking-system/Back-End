@@ -86,4 +86,10 @@ public class EmployeeController {
         employeeService.updatePassword(request, accessToken);
         return ResponseEntity.status(HttpStatus.OK).body("Cập nhật mật khẩu thành công");
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteEmployee(@PathVariable Long id) {
+        employeeService.deleteEmployee(id);
+        return ResponseEntity.ok("Xóa nhân viên thành công");
+    }
 }

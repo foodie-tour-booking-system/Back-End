@@ -20,7 +20,7 @@ import java.util.List;
 
 @Entity
 @Data
-@ToString(exclude = {"schedule", "bookingLogs", "bookingTransactions"})
+@ToString(exclude = { "schedule", "bookingLogs", "bookingTransactions" })
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "bookings", indexes = {
@@ -98,10 +98,6 @@ public class Booking {
 
     @Column(name = "is_deposit")
     Boolean deposit;
-
-    public boolean isDeposit() {
-        return deposit != null && deposit;
-    }
 
     @Column(name = "amount_paid")
     Long amountPaid;

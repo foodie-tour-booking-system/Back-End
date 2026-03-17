@@ -96,4 +96,12 @@ public class RouteServiceImpl implements RouteService {
         routeRepository.save(route);
         return routeMapper.toResponse(route);
     }
+
+    @Override
+    public void deleteRoute(Long routeId) {
+        Route route = routeRepository.findById(routeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy tuyến đường"));
+        route.setRouteStatus(RouteStatus.DELETED);
+        routeRepository.save(route);
+    }
 }

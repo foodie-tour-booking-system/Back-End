@@ -22,4 +22,5 @@ public interface EmployeeService {
     EmployeeResponse updateRole(Long id, Long roleId);
 
     void updatePassword(SetPasswordRequest request, String accessToken);
+    void deleteEmployee(Long id);
 }
