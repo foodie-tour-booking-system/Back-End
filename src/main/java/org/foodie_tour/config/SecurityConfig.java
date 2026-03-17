@@ -3,6 +3,7 @@ package org.foodie_tour.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -39,10 +40,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(requests ->
-                        requests.requestMatchers(PUBLIC_URL).permitAll()
-                                .requestMatchers(PUBLIC_GET_URL).permitAll()
-                                .requestMatchers(PUBLIC_POST_URL).permitAll()
-                                .requestMatchers(PUBLIC_PUT_URL).permitAll()
+                        requests.requestMatchers(HttpMethod.GET, PUBLIC_GET_URL).permitAll()
+                                .requestMatchers(HttpMethod.OPTIONS, PUBLIC_POST_URL).permitAll()
+                                .requestMatchers(HttpMethod.PUT, PUBLIC_PUT_URL).permitAll()
+                                .requestMatchers(PUBLIC_URL).permitAll()
                                 .anyRequest().authenticated()
                 );
 
@@ -70,7 +71,7 @@ public class SecurityConfig {
                 "http://localhost:*",
                 "https://felixiter.xyz"
         ));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
