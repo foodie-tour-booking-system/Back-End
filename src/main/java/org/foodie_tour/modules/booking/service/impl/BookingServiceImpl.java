@@ -135,7 +135,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setRoute(actualSchedule.getRoute());
         booking.setBookingStatus(BookingStatus.PENDING);
         booking.setRefundStatus(RefundStatus.INACTIVE);
-        booking.setDeposit(request.isDeposit());
+        booking.setIsDeposit(request.isDeposit());
 
         long adultPrice = tour.getBasePriceAdult() * request.getAdultCount();
         long childPrice = tour.getBasePriceChild() * request.getChildrenCount();
