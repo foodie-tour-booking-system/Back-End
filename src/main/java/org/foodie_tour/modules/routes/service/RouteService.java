@@ -16,4 +16,6 @@ public interface RouteService {
 
     RouteResponse updateRouteById(Long routeId, RouteRequest routeRequest);
     void deleteRoute(Long routeId);
+
+    List<RouteResponse> getRouteByTourId(Long tourId, RouteStatus routeStatus);
 }
