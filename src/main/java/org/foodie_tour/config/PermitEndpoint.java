@@ -18,10 +18,10 @@ public class PermitEndpoint {
             "/api/onepay/**",
             "/api/payment/vnpay/**",
             "/api/tour/{tourId}/images/**",
+            "/api/auth/login",
     };
 
     public static String[] PUBLIC_POST_ENDPOINTS = {
-            "/api/auth/login",
             "/api/rag-chat",
             "/api/rag-chat/prompt",
     };
