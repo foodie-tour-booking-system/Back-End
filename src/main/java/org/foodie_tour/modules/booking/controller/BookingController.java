@@ -1,4 +1,6 @@
 package org.foodie_tour.modules.booking.controller;
+import org.foodie_tour.modules.tracking.TrackingService;
+import org.foodie_tour.modules.tracking.dto.TrackingResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
@@ -27,6 +29,7 @@ import java.util.List;
 @RequestMapping("/api/booking")
 public class BookingController {
     BookingService bookingService;
+    TrackingService trackingService;
 
     @PostMapping("/reschedule")
     public ResponseEntity<String> rescheduleBooking(@RequestBody RescheduleRequest request) {
@@ -105,5 +108,10 @@ public class BookingController {
     ) {
         var result = bookingService.completeOnTourPayment(bookingCode, method);
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/{bookingCode}/tracking")
+    public ResponseEntity<TrackingResponse> trackBooking(@PathVariable String bookingCode) {
+        return ResponseEntity.ok(trackingService.trackBooking(bookingCode));
     }
 }

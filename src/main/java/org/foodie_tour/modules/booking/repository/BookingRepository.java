@@ -1,4 +1,3 @@
-
 package org.foodie_tour.modules.booking.repository;
 
 import org.foodie_tour.modules.booking.entity.Booking;
@@ -17,4 +16,5 @@ public interface BookingRepository extends JpaRepository<Booking,Long>, JpaSpeci
 
     Optional<Booking> findByBookingCode(String bookingCode);
     Optional<Booking> findByEmail(String email);
+    Optional<Booking> findByBookingCodeAndEmail(String bookingCode, String email);
 }
