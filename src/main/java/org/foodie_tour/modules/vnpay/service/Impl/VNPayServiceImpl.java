@@ -368,9 +368,10 @@ public class VNPayServiceImpl implements VNPayService {
 
         if (success) {
             // Update booking & transaction
-            bookingStatus = BookingStatus.COMPLETED;
+            bookingStatus = BookingStatus.CONFIRMED;
             transactionStatus = TransactionStatus.SUCCESS;
             logDescription = "Thanh toán thành công";
+
 
             // Update customer
             customerBookingRepository.findByBooking(booking).ifPresent(cb -> {

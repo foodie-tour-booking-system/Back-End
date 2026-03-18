@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long>, JpaSpecificationExecutor<Schedule> {
+    Optional<Schedule> findByTourAndDepartureAt(Tour tour, LocalDateTime startTime);
     @Query(value = "SELECT s.departureAt FROM Schedule s WHERE s.scheduleId = :scheduleId")
     Optional<LocalDateTime> getDepartureTime(@Param(value = "scheduleId") long scheduleId);
 

@@ -16,5 +16,8 @@ public interface BookingMapper {
     void updateBooking(BookingCreateRequest request, @org.mapstruct.MappingTarget Booking booking);
 
     @Mapping(target = "departureTime", source = "booking.schedule.departureAt")
+    @Mapping(target = "duration", source = "booking.tour.duration")
+    @Mapping(target = "tourId", source = "booking.tour.tourId")
     BookingResponse toResponse(Booking booking);
+
 }

@@ -1,4 +1,3 @@
-
 package org.foodie_tour.modules.booking.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -23,6 +22,12 @@ public class BookingLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "booking_log_id")
     Long bookingLogId;
+
+    @Column(name = "log_message")
+    private String logMessage;
+
+    @Column(name = "timestamp")
+    private LocalDateTime timestamp;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booking_id")
