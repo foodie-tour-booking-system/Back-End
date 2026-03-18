@@ -16,7 +16,6 @@ import org.foodie_tour.modules.booking.enums.BookingStatus;
 import org.foodie_tour.modules.booking.enums.PaymentMethod;
 import org.foodie_tour.modules.booking.repository.BookingRepository;
 import org.foodie_tour.modules.customer.entity.Customer;
-import org.foodie_tour.modules.customer.entity.CustomerBooking;
 import org.foodie_tour.modules.customer.enums.CustomerStatus;
 import org.foodie_tour.modules.customer.repository.CustomerBookingRepository;
 import org.foodie_tour.modules.customer.repository.CustomerRepository;
