@@ -58,4 +58,11 @@ public class RouteController {
         routeService.deleteRoute(id);
         return ResponseEntity.ok("Xóa tuyến đường thành công");
     }
+
+    @GetMapping("/tour/{tourId}")
+    public ResponseEntity<List<RouteResponse>> getRouteByTourId(@PathVariable Long tourId,
+                                                      @RequestParam(required = false) RouteStatus routeStatus) {
+        List<RouteResponse> response = routeService.getRouteByTourId(tourId, routeStatus);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }

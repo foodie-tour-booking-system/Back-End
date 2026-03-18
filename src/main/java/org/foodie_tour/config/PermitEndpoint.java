@@ -29,6 +29,7 @@ public class PermitEndpoint {
     public static String[] PUBLIC_GET_ENDPOINTS = {
             "/api/routes",
             "/api/routes/{id}",
+            "/api/routes/tour/{tourId}",
             "/api/schedules",
             "/api/dishes",
             "/api/dishes/{id}",
