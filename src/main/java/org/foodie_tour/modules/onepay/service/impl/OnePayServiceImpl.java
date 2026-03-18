@@ -143,9 +143,10 @@ public class OnePayServiceImpl implements OnePayService {
         transactionsRepository.save(transactions);
 
         if (isSuccess) {
-            booking.setBookingStatus(BookingStatus.COMPLETED);
+            booking.setBookingStatus(BookingStatus.CONFIRMED);
             bookingRepository.save(booking);
             createBookingLog(booking, "Thanh toán Visa thành công");
+
 
             customerBookingRepository.findByBooking(booking).ifPresent(customerBooking -> {
                 var customer = customerBooking.getCustomer();

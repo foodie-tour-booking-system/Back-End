@@ -1,6 +1,9 @@
-package org.foodie_tour.modules.booking.dto.response;
+package org.foodie_tour.modules.report.dto;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.foodie_tour.modules.booking.enums.BookingStatus;
 
@@ -10,16 +13,10 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BookingResponse {
-    Long bookingId;
+public class BookingReportResponse {
     String bookingCode;
     Long totalPrice;
-    String pickupLocation;
     BookingStatus bookingStatus;
     LocalDateTime departureTime;
-    boolean deposit;
-    Long amountPaid;
-    Long remainingAmount;
-    Integer duration;
-    Long tourId;   // ← dùng để lọc lịch trình cùng tour
+    Integer totalCustomers;
 }

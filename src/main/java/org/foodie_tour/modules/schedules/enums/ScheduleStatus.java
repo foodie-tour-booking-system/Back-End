@@ -4,5 +4,6 @@ public enum ScheduleStatus {
     ACTIVE,
     INACTIVE,
     DELETED,
-    DRAFT
+    DRAFT,
+    AVAILABLE
 }
