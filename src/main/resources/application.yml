@@ -76,10 +76,13 @@ spring:
   sql:
     init:
       mode: always
+      schema-locations:
+        - classpath:rbac/update-schema.sql
       data-locations:
         - classpath:rbac/insert-role.sql
         - classpath:rbac/insert-permission.sql
         - classpath:rbac/insert-role-permission.sql
+
 
 aws:
   s3:

@@ -15,6 +15,7 @@ import org.foodie_tour.modules.booking.dto.request.BookingCancelRequest;
 import org.foodie_tour.modules.booking.dto.request.BookingCreateRequest;
 import org.foodie_tour.modules.booking.dto.request.ProcessRelocateRequest;
 import org.foodie_tour.modules.booking.dto.request.RelocateBookingRequest;
+import org.foodie_tour.modules.booking.dto.request.RescheduleRequest;
 import org.foodie_tour.modules.booking.dto.response.BookingLogResponse;
 import org.foodie_tour.modules.booking.dto.response.BookingResponse;
 import org.foodie_tour.modules.booking.dto.response.RelocateBookingResponse;
@@ -79,6 +80,51 @@ public class BookingServiceImpl implements BookingService {
     RelocateBookingMapper relocateBookingMapper;
     private final SystemConfigRepository systemConfigRepository;
     private final TransactionsRepository transactionsRepository;
+
+    @Override
+    public String rescheduleBooking(RescheduleRequest request) {
+        Booking booking = bookingRepository.findById(request.getBookingId())
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy booking với ID: " + request.getBookingId()));
+
+        if (booking.getBookingStatus() == BookingStatus.CANCELLED || booking.getBookingStatus() == BookingStatus.COMPLETED) {
+            throw new InvalidateDataException("Không thể dời tour với trạng thái " + booking.getBookingStatus());
+        }
+
+        Schedule oldSchedule = booking.getSchedule();
+
+        // Tìm lịch trình mới: ưu tiên dùng scheduleId nếu có
+        Schedule newSchedule;
+        if (request.getScheduleId() != null) {
+            newSchedule = scheduleRepository.findById(request.getScheduleId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy lịch trình với ID: " + request.getScheduleId()));
+        } else {
+            Tour tour = oldSchedule.getTour();
+            newSchedule = scheduleRepository.findByTourAndDepartureAt(tour, request.getNewTourDate())
+                    .orElseThrow(() -> new ResourceNotFoundException("Không có lịch trình cho tour này vào ngày được chọn."));
+        }
+
+        if (newSchedule.getScheduleStatus() == ScheduleStatus.DELETED
+                || newSchedule.getScheduleStatus() == ScheduleStatus.INACTIVE) {
+            throw new InvalidateDataException("Lịch trình mới không khả dụng.");
+        }
+
+        // Update booking with new schedule
+        booking.setSchedule(newSchedule);
+        booking.setBookingStatus(BookingStatus.RESCHEDULED);
+        bookingRepository.save(booking);
+
+        // Create a log for the reschedule action
+        BookingLog bookingLog = BookingLog.builder()
+                .booking(booking)
+                .bookingStatus(BookingStatus.RESCHEDULED)
+                .description("Tour đã được dời từ " + oldSchedule.getDepartureAt() + " sang " + newSchedule.getDepartureAt() + ". Lý do: " + request.getReason())
+                .build();
+        bookingLogRepository.save(bookingLog);
+
+        return "Dời tour thành công. Lịch trình mới của bạn là vào " + newSchedule.getDepartureAt();
+    }
+
+
 
     @Transactional
     public BookingResponse createBooking(BookingCreateRequest request) {
@@ -343,7 +389,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setBookingStatus(BookingStatus.CANCELLED);
         booking.setCancellationReason(request.getCancellationReason());
 
-        String refundNote = "";
+        String refundNote;
         if (isEligibleForRefund) {
             booking.setBookingStatus(BookingStatus.CANCELLED);
             if (booking.getTotalPrice() > 0) {
@@ -415,3 +461,4 @@ public class BookingServiceImpl implements BookingService {
         return null;
     }
 }
+

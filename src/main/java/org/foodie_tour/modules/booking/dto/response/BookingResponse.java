@@ -20,4 +20,6 @@ public class BookingResponse {
     boolean deposit;
     Long amountPaid;
     Long remainingAmount;
+    Integer duration;
+    Long tourId;   // ← dùng để lọc lịch trình cùng tour
 }

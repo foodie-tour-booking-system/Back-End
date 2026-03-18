@@ -1,4 +1,3 @@
-
 package org.foodie_tour.modules.booking.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +8,7 @@ import org.foodie_tour.modules.booking.dto.request.BookingCancelRequest;
 import org.foodie_tour.modules.booking.dto.request.BookingCreateRequest;
 import org.foodie_tour.modules.booking.dto.request.ProcessRelocateRequest;
 import org.foodie_tour.modules.booking.dto.request.RelocateBookingRequest;
+import org.foodie_tour.modules.booking.dto.request.RescheduleRequest;
 import org.foodie_tour.modules.booking.dto.response.BookingLogResponse;
 import org.foodie_tour.modules.booking.dto.response.BookingResponse;
 import org.foodie_tour.modules.booking.dto.response.RelocateBookingResponse;
@@ -27,6 +27,12 @@ import java.util.List;
 @RequestMapping("/api/booking")
 public class BookingController {
     BookingService bookingService;
+
+    @PostMapping("/reschedule")
+    public ResponseEntity<String> rescheduleBooking(@RequestBody RescheduleRequest request) {
+        String result = bookingService.rescheduleBooking(request);
+        return ResponseEntity.ok(result);
+    }
 
     @PostMapping()
     public ResponseEntity<BookingResponse> createBooking(@RequestBody BookingCreateRequest request) {
