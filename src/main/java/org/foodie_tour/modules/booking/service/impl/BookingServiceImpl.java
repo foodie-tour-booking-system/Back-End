@@ -133,6 +133,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setSchedule(actualSchedule);
         booking.setTour(tour);
         booking.setRoute(actualSchedule.getRoute());
+        booking.setDepartureTime(actualDepartureAt);
         booking.setBookingStatus(BookingStatus.PENDING);
         booking.setRefundStatus(RefundStatus.INACTIVE);
         booking.setIsDeposit(request.isDeposit());
