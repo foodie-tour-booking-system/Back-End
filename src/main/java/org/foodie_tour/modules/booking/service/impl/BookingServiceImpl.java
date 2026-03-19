@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.foodie_tour.common.exception.InvalidateDataException;
 import org.foodie_tour.common.exception.ResourceNotFoundException;
+import org.foodie_tour.common.utils.MailSampleText;
 import org.foodie_tour.common.utils.RandomCode;
 import org.foodie_tour.modules.auth.entity.OtpCode;
 import org.foodie_tour.modules.auth.enums.TokenScope;
@@ -223,6 +224,21 @@ public class BookingServiceImpl implements BookingService {
         customerBooking.setCustomer(customer);
         customerBooking.setIsMain(true);
         customerBookingRepository.save(customerBooking);
+
+        int totalCustomer = booking.getAdultCount() + booking.getChildrenCount();
+        String emailContent = String.format(MailSampleText.CREATE_BOOKING_CONTENT,
+                booking.getBookingCode(),
+                customer.getCustomerName(),
+                tour.getTourName(),
+                booking.getDepartureTime(),
+                totalCustomer,
+                booking.getTotalPrice());
+
+        mailService.sendMail(new SendMailRequest(
+                new String[]{request.getEmail()},
+                MailSampleText.CREATE_BOOKING_TITLE,
+                emailContent
+        ));
 
         return bookingMapper.toResponse(booking);
     }
