@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.foodie_tour.modules.feedback.entity.Feedback;
 import org.foodie_tour.modules.images.enums.ImageStatus;
+import org.foodie_tour.modules.routes.entity.RouteDetail;
 import org.foodie_tour.modules.tours.entity.Dish;
 
 import java.time.LocalDateTime;
@@ -47,6 +48,10 @@ public class Image {
     @JoinColumn(name = "feedback_id")
     private Feedback feedback;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "route_detail_id")
+    private RouteDetail routeDetail;
+
     @OneToMany(mappedBy = "image", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<TourImage> tourImages;
-}
+}

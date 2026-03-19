@@ -6,9 +6,11 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.foodie_tour.modules.images.entity.Image;
 import org.foodie_tour.modules.routes.enums.RouteDetailStatus;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -45,4 +47,8 @@ public class RouteDetail {
     @JoinColumn(name = "route_id")
     @JsonBackReference
     private Route route;
+
+    @OneToMany(mappedBy = "routeDetail", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Image> images;
 }
+
