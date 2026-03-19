@@ -21,4 +21,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long>, JpaSp
             "AND s.scheduleStatus = 'ACTIVE'")
     Optional<Schedule> findActualSchedule(@Param("tour") Tour tour,
                                           @Param("departureAt") LocalDateTime departureAt);
+
+    Optional<Schedule> findByTourAndDepartureAtAndIsTemplate(Tour tour, LocalDateTime departureAt, boolean isTemplate);
 }
