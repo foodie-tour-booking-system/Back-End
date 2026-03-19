@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.foodie_tour.modules.vnpay.dto.request.PaymentRequest;
+import org.foodie_tour.modules.vnpay.dto.response.VNPayResultResponse;
 import org.foodie_tour.modules.vnpay.service.VNPayService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,5 +39,11 @@ public class VNPayController {
         String url = vnPayService.processPaymentResponse(queryParams);
         redirectView.setUrl(url);
         return redirectView;
+    }
+
+    @GetMapping("/callback")
+    public ResponseEntity<VNPayResultResponse> handlePaymentCallback(@RequestParam Map<String, String> queryParams) {
+        var result = vnPayService.handlePaymentCallback(queryParams);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

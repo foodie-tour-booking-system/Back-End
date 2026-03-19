@@ -161,12 +161,7 @@ public class BookingServiceImpl implements BookingService {
         Tour tour = template.getTour();
         if (tour == null) throw new ResourceNotFoundException("Tour không tồn tại");
 
-        Booking booking = bookingRepository.findByEmail(request.getEmail())
-                .map(existing -> {
-                    bookingMapper.updateBooking(request, existing);
-                    return existing;
-                })
-                .orElseGet(() -> bookingMapper.toBooking(request));
+        Booking booking = bookingMapper.toBooking(request);
 
         booking.setSchedule(template);
         booking.setTour(tour);
