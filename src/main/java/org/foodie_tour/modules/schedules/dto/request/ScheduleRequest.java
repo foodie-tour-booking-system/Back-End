@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.foodie_tour.modules.schedules.enums.ScheduleStatus;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -30,9 +30,9 @@ public class ScheduleRequest {
 
     @Min(value = 1, message = "Số lượng khách tối đa ít nhất là 1")
     private Integer maxPax;
-    @Schema(type = "string", example = "08:00:00", description = "Giờ khởi hành (HH:mm:ss)")
-    @JsonFormat(pattern = "HH:mm:ss")
-    private LocalTime departureAt;
+    @Schema(type = "string", example = "2026-01-01T08:00:00", description = "Thời điểm khởi hành (yyyy-MM-dd'T'HH:mm:ss)")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime departureAt;
     private ScheduleStatus scheduleStatus;
     private Boolean isTemplate;
 }

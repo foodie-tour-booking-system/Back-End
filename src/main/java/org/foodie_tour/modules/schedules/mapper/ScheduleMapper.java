@@ -16,14 +16,10 @@ public interface ScheduleMapper {
     @Mapping(target = "route", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "departureAt",
-             expression = "java(scheduleRequest.getDepartureAt() != null ? java.time.LocalDateTime.of(java.time.LocalDate.of(1970, 1, 1), scheduleRequest.getDepartureAt()) : null)")
     Schedule toEntity(ScheduleRequest scheduleRequest);
 
     @Mapping(target = "tourId", source = "tour.tourId")
     @Mapping(target = "routeId", source = "route.routeId")
-    @Mapping(target = "departureAt",
-             expression = "java(schedule.getDepartureAt() != null ? schedule.getDepartureAt().toLocalTime() : null)")
     ScheduleResponse toResponse(Schedule schedule);
 
     @Mapping(target = "scheduleId", ignore = true)
@@ -31,7 +27,5 @@ public interface ScheduleMapper {
     @Mapping(target = "route", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "departureAt",
-             expression = "java(scheduleRequest.getDepartureAt() != null ? java.time.LocalDateTime.of(java.time.LocalDate.of(1970, 1, 1), scheduleRequest.getDepartureAt()) : null)")
     void updateEntity(ScheduleRequest scheduleRequest, @MappingTarget Schedule schedule);
 }
