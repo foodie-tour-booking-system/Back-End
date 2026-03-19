@@ -19,9 +19,9 @@ public class TourSpecifications {
     public static Specification<Tour> priceBetween(Long minPrice, Long maxPrice) {
         return (root, query, cb) -> {
             if (minPrice == null && maxPrice == null) return null;
-            if (minPrice != null && maxPrice == null) return cb.greaterThanOrEqualTo(root.get("basePriceAdult"), minPrice);
-            if (minPrice == null) return cb.lessThanOrEqualTo(root.get("basePriceAdult"), maxPrice);
-            return cb.between(root.get("basePriceAdult"), minPrice, maxPrice);
+            if (minPrice != null && maxPrice == null) return cb.greaterThanOrEqualTo(root.get("groupPriceAdult"), minPrice);
+            if (minPrice == null) return cb.lessThanOrEqualTo(root.get("groupPriceAdult"), maxPrice);
+            return cb.between(root.get("groupPriceAdult"), minPrice, maxPrice);
         };
     }
 }

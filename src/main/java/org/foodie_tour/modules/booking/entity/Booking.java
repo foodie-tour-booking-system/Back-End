@@ -10,6 +10,7 @@ import org.foodie_tour.modules.booking.enums.RefundStatus;
 import org.foodie_tour.modules.routes.entity.Route;
 import org.foodie_tour.modules.schedules.entity.Schedule;
 import org.foodie_tour.modules.tours.entity.Tour;
+import org.foodie_tour.modules.tours.enums.TourType;
 import org.foodie_tour.modules.transaction.entity.Transactions;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -86,6 +87,10 @@ public class Booking {
     @Column(name = "update_at")
     @UpdateTimestamp
     LocalDateTime updateAt;
+
+    @Column(name = "tour_type")
+    @Enumerated(EnumType.STRING)
+    TourType tourType;
 
     @Column(name = "booking_status")
     @Enumerated(EnumType.STRING)

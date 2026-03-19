@@ -21,5 +21,7 @@ public class BookingResponse {
     Long amountPaid;
     Long remainingAmount;
     Integer duration;
-    Long tourId;   // ← dùng để lọc lịch trình cùng tour
+    Long tourId;
+    org.foodie_tour.modules.tours.enums.TourType tourType;
+
 }

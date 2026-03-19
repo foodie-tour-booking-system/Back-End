@@ -20,9 +20,11 @@ public class BookingCreateRequest {
     long scheduleId;
     @JsonProperty("date")
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate departureDate;    String customerName;
+    private LocalDate departureDate;
+    String customerName;
     String email;
     String phone;
+    org.foodie_tour.modules.tours.enums.TourType tourType;
     int adultCount;
     int childrenCount;
     String pickupLocation;
