@@ -1,5 +1,6 @@
-
 package org.foodie_tour.modules.booking.controller;
+import org.foodie_tour.modules.tracking.TrackingService;
+import org.foodie_tour.modules.tracking.dto.TrackingResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
@@ -9,6 +10,7 @@ import org.foodie_tour.modules.booking.dto.request.BookingCancelRequest;
 import org.foodie_tour.modules.booking.dto.request.BookingCreateRequest;
 import org.foodie_tour.modules.booking.dto.request.ProcessRelocateRequest;
 import org.foodie_tour.modules.booking.dto.request.RelocateBookingRequest;
+import org.foodie_tour.modules.booking.dto.request.RescheduleRequest;
 import org.foodie_tour.modules.booking.dto.response.BookingLogResponse;
 import org.foodie_tour.modules.booking.dto.response.BookingResponse;
 import org.foodie_tour.modules.booking.dto.response.RelocateBookingResponse;
@@ -27,6 +29,13 @@ import java.util.List;
 @RequestMapping("/api/booking")
 public class BookingController {
     BookingService bookingService;
+    TrackingService trackingService;
+
+    @PostMapping("/reschedule")
+    public ResponseEntity<String> rescheduleBooking(@RequestBody RescheduleRequest request) {
+        String result = bookingService.rescheduleBooking(request);
+        return ResponseEntity.ok(result);
+    }
 
     @PostMapping()
     public ResponseEntity<BookingResponse> createBooking(@RequestBody BookingCreateRequest request) {
@@ -99,5 +108,10 @@ public class BookingController {
     ) {
         var result = bookingService.completeOnTourPayment(bookingCode, method);
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/{bookingCode}/tracking")
+    public ResponseEntity<TrackingResponse> trackBooking(@PathVariable String bookingCode) {
+        return ResponseEntity.ok(trackingService.trackBooking(bookingCode));
     }
 }

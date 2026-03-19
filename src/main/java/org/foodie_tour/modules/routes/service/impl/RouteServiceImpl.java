@@ -104,4 +104,18 @@ public class RouteServiceImpl implements RouteService {
         route.setRouteStatus(RouteStatus.DELETED);
         routeRepository.save(route);
     }
+
+    @Override
+    public List<RouteResponse> getRouteByTourId(Long tourId, RouteStatus routeStatus) {
+        Tour tour = tourRepository.findById(tourId)
+                .orElseThrow(() -> new ResourceNotFoundException("Tour không tồn tại"));
+
+        List<Route> route = routeRepository.findRouteByTour(tour);
+
+
+        return route.stream()
+                .filter(r -> routeStatus == null || r.getRouteStatus().equals(routeStatus))
+                .map(routeMapper::toResponse)
+                .toList();
+    }
 }

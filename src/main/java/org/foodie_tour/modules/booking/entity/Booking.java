@@ -76,6 +76,9 @@ public class Booking {
     @Column(name = "cancellation_reason", columnDefinition = "TEXT")
     String cancellationReason;
 
+    @Column(name = "departure_time")
+    LocalDateTime departureTime;
+
     @Column(name = "create_at")
     @CreationTimestamp
     LocalDateTime createAt;

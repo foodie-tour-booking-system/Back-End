@@ -18,10 +18,10 @@ public class PermitEndpoint {
             "/api/onepay/**",
             "/api/payment/vnpay/**",
             "/api/tour/{tourId}/images/**",
+            "/api/auth/login",
     };
 
     public static String[] PUBLIC_POST_ENDPOINTS = {
-            "/api/auth/login",
             "/api/rag-chat",
             "/api/rag-chat/prompt",
     };
@@ -29,12 +29,14 @@ public class PermitEndpoint {
     public static String[] PUBLIC_GET_ENDPOINTS = {
             "/api/routes",
             "/api/routes/{id}",
+            "/api/routes/tour/{tourId}",
             "/api/schedules",
             "/api/dishes",
             "/api/dishes/{id}",
             "/api/tour/{id}",
             "/api/tour",
-            "/api/tour/search"
+            "/api/tour/search",
+            "/api/v1/customer/**"
     };
     public static String[] PUBLIC_PUT_ENDPOINTS = {
 

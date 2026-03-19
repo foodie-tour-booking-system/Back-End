@@ -16,7 +16,6 @@ import org.foodie_tour.modules.booking.enums.BookingStatus;
 import org.foodie_tour.modules.booking.enums.PaymentMethod;
 import org.foodie_tour.modules.booking.repository.BookingRepository;
 import org.foodie_tour.modules.customer.entity.Customer;
-import org.foodie_tour.modules.customer.entity.CustomerBooking;
 import org.foodie_tour.modules.customer.enums.CustomerStatus;
 import org.foodie_tour.modules.customer.repository.CustomerBookingRepository;
 import org.foodie_tour.modules.customer.repository.CustomerRepository;
@@ -368,9 +367,10 @@ public class VNPayServiceImpl implements VNPayService {
 
         if (success) {
             // Update booking & transaction
-            bookingStatus = BookingStatus.COMPLETED;
+            bookingStatus = BookingStatus.CONFIRMED;
             transactionStatus = TransactionStatus.SUCCESS;
             logDescription = "Thanh toán thành công";
+
 
             // Update customer
             customerBookingRepository.findByBooking(booking).ifPresent(cb -> {

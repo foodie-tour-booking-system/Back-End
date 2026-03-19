@@ -1,5 +1,7 @@
 package org.foodie_tour.modules.schedules.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -7,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.foodie_tour.modules.schedules.enums.ScheduleStatus;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 @AllArgsConstructor
@@ -28,7 +30,9 @@ public class ScheduleRequest {
 
     @Min(value = 1, message = "Số lượng khách tối đa ít nhất là 1")
     private Integer maxPax;
-    private LocalDateTime departureAt;
+    @Schema(type = "string", example = "08:00:00", description = "Giờ khởi hành (HH:mm:ss)")
+    @JsonFormat(pattern = "HH:mm:ss")
+    private LocalTime departureAt;
     private ScheduleStatus scheduleStatus;
     private Boolean isTemplate;
 }
