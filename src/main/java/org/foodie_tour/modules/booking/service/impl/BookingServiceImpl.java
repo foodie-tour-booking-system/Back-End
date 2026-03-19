@@ -58,6 +58,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -148,27 +149,17 @@ public class BookingServiceImpl implements BookingService {
         Schedule template = scheduleRepository.findById(request.getScheduleId())
                 .orElseThrow(() -> new ResourceNotFoundException("Khung giờ khởi hành không tồn tại"));
 
+        LocalTime startTime = template.getTime() != null 
+                ? template.getTime() 
+                : template.getDepartureAt().toLocalTime();
+
         LocalDateTime actualDepartureAt = LocalDateTime.of(
                 request.getDepartureDate(),
-                template.getDepartureAt().toLocalTime()
+                startTime
         );
 
         Tour tour = template.getTour();
         if (tour == null) throw new ResourceNotFoundException("Tour không tồn tại");
-
-        Schedule actualSchedule = scheduleRepository.findActualSchedule(tour, actualDepartureAt)
-                .orElseGet(() -> {
-                    Schedule newSchedule = new Schedule();
-                    newSchedule.setTour(tour);
-                    newSchedule.setDepartureAt(actualDepartureAt);
-                    newSchedule.setIsTemplate(false);
-                    newSchedule.setScheduleStatus(ScheduleStatus.ACTIVE);
-                    newSchedule.setMaxPax(template.getMaxPax());
-                    newSchedule.setMinPax(template.getMinPax());
-                    newSchedule.setScheduleDescription(template.getScheduleDescription());
-                    newSchedule.setRoute(template.getRoute());
-                    return scheduleRepository.save(newSchedule);
-                });
 
         Booking booking = bookingRepository.findByEmail(request.getEmail())
                 .map(existing -> {
@@ -177,9 +168,9 @@ public class BookingServiceImpl implements BookingService {
                 })
                 .orElseGet(() -> bookingMapper.toBooking(request));
 
-        booking.setSchedule(actualSchedule);
+        booking.setSchedule(template);
         booking.setTour(tour);
-        booking.setRoute(actualSchedule.getRoute());
+        booking.setRoute(template.getRoute());
         booking.setDepartureTime(actualDepartureAt);
         booking.setBookingStatus(BookingStatus.PENDING);
         booking.setRefundStatus(RefundStatus.INACTIVE);
