@@ -26,6 +26,7 @@ FROM (VALUES
     ('UPDATE_ROUTE', 'Cho phép chỉnh sửa lộ trình đã có', 'ACTIVE'),
 
     ('CREATE_SCHEDULE', 'Cho phép tạo lịch khởi hành cho các tour', 'ACTIVE'),
+    ('UPDATE_SCHEDULE', 'Cho phép chỉnh sửa lịch khởi hành', 'ACTIVE'),
     ('DELETE_SCHEDULE', 'Cho phép xóa hoặc hủy lịch khởi hành', 'ACTIVE'),
 
     ('CREATE_DISH', 'Cho phép thêm món ăn mới vào danh mục của tour', 'ACTIVE'),

@@ -40,7 +40,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         Route route = routeRepository.findById(request.getRouteId())
                 .orElseThrow(() -> new ResourceNotFoundException("Tuyến đường không tồn tại"));
 
-        if (request.getMinPax() > request.getMaxPax()) {
+        if (request.getMaxPax() != null && request.getMinPax() > request.getMaxPax()) {
             throw new InvalidateDataException(
                     "Số lượng khách tối thiểu không được lớn hơn số lượng khách tối đa");
         }
@@ -78,7 +78,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         Route route = routeRepository.findById(request.getRouteId())
                 .orElseThrow(() -> new ResourceNotFoundException("Tuyến đường không tồn tại"));
 
-        if (request.getMinPax() > request.getMaxPax()) {
+        if (request.getMaxPax() != null && request.getMinPax() > request.getMaxPax()) {
             throw new InvalidateDataException(
                     "Số lượng khách tối thiểu không được lớn hơn số lượng khách tối đa");
         }
@@ -95,10 +95,13 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    @Transactional
     public void deleteSchedule(Long scheduleId) {
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new ResourceNotFoundException("Lịch trình không tồn tại"));
         schedule.setScheduleStatus(ScheduleStatus.INACTIVE);
         scheduleRepository.save(schedule);
     }
+
+
 }

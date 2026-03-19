@@ -17,10 +17,12 @@ public class TourResponse {
     private Long tourId;
     private String tourName;
     private String tourDescription;
-    private Long basePriceAdult;
-    private Long basePriceChild;
+    private Long groupPriceAdult;
+    private Long groupPriceChild;
+    private Long privatePriceAdult;
+    private Long privatePriceChild;
     private int duration;
-    private TourType tourType;
+
     private TourStatus tourStatus;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

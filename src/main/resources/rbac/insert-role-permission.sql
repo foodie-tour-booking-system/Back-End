@@ -20,7 +20,7 @@ WHERE r.name = 'DISPATCH'
                  'CREATE_TOUR', 'UPDATE_TOUR', 'DELETE_TOUR',
                  'ADD_TOUR_IMAGE', 'SET_PRIMARY_TOUR_IMAGE',
                  'CREATE_ROUTE', 'UPDATE_ROUTE',
-                 'CREATE_SCHEDULE', 'DELETE_SCHEDULE',
+                 'CREATE_SCHEDULE', 'UPDATE_SCHEDULE', 'DELETE_SCHEDULE',
                  'CREATE_DISH', 'UPDATE_DISH', 'DELETE_DISH',
                  'VIEW_EMPLOYEE', 'VERIFY_PASSWORD', 'UPDATE_PASSWORD'
     );

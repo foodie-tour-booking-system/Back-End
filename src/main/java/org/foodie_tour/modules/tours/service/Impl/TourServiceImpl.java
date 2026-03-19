@@ -34,8 +34,12 @@ public class TourServiceImpl implements TourService {
             throw new DuplicateResourceException("Tên tour đã tồn tại");
         }
 
-        if (tourRequest.getBasePriceChild() > tourRequest.getBasePriceAdult()) {
-            throw new InvalidateDataException("Tour trẻ em phải nhỏ hơn tour người lớn");
+        if (tourRequest.getGroupPriceChild() > tourRequest.getGroupPriceAdult()) {
+            throw new InvalidateDataException("Giá tour trẻ em (Group) phải nhỏ hơn giá tour người lớn");
+        }
+
+        if (tourRequest.getPrivatePriceChild() > tourRequest.getPrivatePriceAdult()) {
+            throw new InvalidateDataException("Giá tour trẻ em (Private) phải nhỏ hơn giá tour người lớn");
         }
 
         Tour tour = tourMapper.toEntity(tourRequest);
@@ -70,6 +74,14 @@ public class TourServiceImpl implements TourService {
     public TourResponse updateTour(Long tourId, TourRequest tourRequest) {
         Tour tour = tourRepository.findById(tourId)
                 .orElseThrow(() -> new ResourceNotFoundException("Tour không tồn tại"));
+
+        if (tourRequest.getGroupPriceChild() > tourRequest.getGroupPriceAdult()) {
+            throw new InvalidateDataException("Giá tour trẻ em (Group) phải nhỏ hơn giá tour người lớn");
+        }
+
+        if (tourRequest.getPrivatePriceChild() > tourRequest.getPrivatePriceAdult()) {
+            throw new InvalidateDataException("Giá tour trẻ em (Private) phải nhỏ hơn giá tour người lớn");
+        }
 
         tourMapper.updateEntity(tourRequest, tour);
         tour.setUpdatedAt(LocalDateTime.now());

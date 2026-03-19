@@ -183,9 +183,18 @@ public class BookingServiceImpl implements BookingService {
         booking.setRefundStatus(RefundStatus.INACTIVE);
         booking.setIsDeposit(request.isDeposit());
 
-        long adultPrice = tour.getBasePriceAdult() * request.getAdultCount();
-        long childPrice = tour.getBasePriceChild() * request.getChildrenCount();
-        long totalPrice = adultPrice + childPrice;
+        booking.setTourType(request.getTourType());
+
+        long adultPrice;
+        long childPrice;
+        if (request.getTourType() == org.foodie_tour.modules.tours.enums.TourType.PRIVATE) {
+            adultPrice = tour.getPrivatePriceAdult();
+            childPrice = tour.getPrivatePriceChild();
+        } else {
+            adultPrice = tour.getGroupPriceAdult();
+            childPrice = tour.getGroupPriceChild();
+        }
+        long totalPrice = (adultPrice * request.getAdultCount()) + (childPrice * request.getChildrenCount());
         booking.setTotalPrice(totalPrice);
 
         if (request.isDeposit()) {

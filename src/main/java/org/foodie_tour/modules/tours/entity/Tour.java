@@ -37,15 +37,18 @@ public class Tour {
     @Column(name = "duration")
     private int duration;
 
-    @Column(name = "base_price_adult")
-    private Long basePriceAdult;
+    @Column(name = "group_price_adult")
+    private Long groupPriceAdult;
 
-    @Column(name = "base_price_child")
-    private Long basePriceChild;
+    @Column(name = "group_price_child")
+    private Long groupPriceChild;
 
-    @Column(name = "tour_type")
-    @Enumerated(EnumType.STRING)
-    private TourType tourType;
+    @Column(name = "private_price_adult")
+    private Long privatePriceAdult;
+
+    @Column(name = "private_price_child")
+    private Long privatePriceChild;
+
 
     @Column(name = "tour_status")
     @Enumerated(EnumType.STRING)
