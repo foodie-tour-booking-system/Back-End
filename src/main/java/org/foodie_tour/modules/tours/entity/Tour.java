@@ -1,9 +1,7 @@
 package org.foodie_tour.modules.tours.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.foodie_tour.modules.images.entity.TourImage;
 import org.foodie_tour.modules.routes.entity.Route;
 import org.foodie_tour.modules.schedules.entity.Schedule;
@@ -14,7 +12,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString(exclude = {"dishes", "schedules", "routes", "tourImages"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "tours", indexes = {
@@ -71,4 +71,7 @@ public class Tour {
 
     @OneToMany(mappedBy = "tour")
     private List<TourImage> tourImages;
+
+    @Column(name = "vector_id")
+    private String vectorId;
 }

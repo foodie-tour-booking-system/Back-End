@@ -3,6 +3,7 @@ package org.foodie_tour.modules.tours.service.Impl;
 import lombok.RequiredArgsConstructor;
 import org.foodie_tour.common.exception.DuplicateResourceException;
 import org.foodie_tour.common.exception.ResourceNotFoundException;
+import org.foodie_tour.common.rag.RagUtils;
 import org.foodie_tour.modules.images.entity.Image;
 import org.foodie_tour.modules.images.repository.ImageRepository;
 import org.foodie_tour.modules.tours.dto.request.DishRequest;
@@ -27,6 +28,7 @@ public class DishServiceImpl implements DishService {
     private final DishMapper dishMapper;
     private final TourRepository tourRepository;
     private final ImageRepository imageRepository;
+    private final RagUtils ragUtils;
 
     @Override
     @Transactional
@@ -51,6 +53,9 @@ public class DishServiceImpl implements DishService {
         dish.setIsPrimary(dishRequest.getIsPrimary());
         imageRepository.save(image);
         }
+
+        ragUtils.updateVectorTour(tour);
+
         return dishMapper.toResponse(dish);
     }
 
@@ -89,6 +94,10 @@ public class DishServiceImpl implements DishService {
         dishMapper.updateEntity(dishRequest, dish);
         dish.setUpdatedAt(LocalDateTime.now());
         dish = dishRepository.save(dish);
+
+        Tour tour = dish.getTour();
+        ragUtils.updateVectorTour(tour);
+
         return dishMapper.toResponse(dish);
     }
 
@@ -98,5 +107,8 @@ public class DishServiceImpl implements DishService {
                 .orElseThrow(() -> new ResourceNotFoundException("Món ăn không tồn tại"));
         dish.setDishStatus(DishStatus.INACTIVE);
         dishRepository.save(dish);
+
+        Tour tour = dish.getTour();
+        ragUtils.updateVectorTour(tour);
     }
 }

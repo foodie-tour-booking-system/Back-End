@@ -3,14 +3,18 @@ package org.foodie_tour.modules.customer.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.foodie_tour.modules.customer.enums.CustomerStatus;
 
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString(exclude = { "customerBookings" })
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "customers", indexes = {

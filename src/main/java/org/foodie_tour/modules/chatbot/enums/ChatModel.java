@@ -6,11 +6,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ChatModel {
-    LLAMA3_8B(30),
-    LLAMA3_70B(30),
-    GPT_OSS_120B(30),
-    GPT_OSS_20B(30),
-    LLAMA4_17B(30),
+    CLIENT_KEY_1(30),
+    CLIENT_KEY_2(30),
+    CLIENT_KEY_3(30),
+    CLIENT_KEY_4(30),
     ;
     final int limit;
 }

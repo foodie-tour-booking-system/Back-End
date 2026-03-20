@@ -25,34 +25,55 @@ import javax.sql.DataSource;
 @Configuration
 public class ChatClientConfig {
 
-    @Value("${spring.ai.openai.chat.options.model.custom-1}")
-    private String LLAMA3_8B;
-
-    @Value("${spring.ai.openai.chat.options.model.custom-2}")
-    private String LLAMA3_70B;
-
-    @Value("${spring.ai.openai.chat.options.model.custom-3}")
+    @Value("${spring.ai.openai.chat.options.model}")
     private String GPT_OSS_120B;
-
-    @Value("${spring.ai.openai.chat.options.model.custom-4}")
-    private String GPT_OSS_20B;
-
-    @Value("${spring.ai.openai.chat.options.model.custom-5}")
-    private String LLAMA4_17B;
 
     @Value("${spring.ai.openai.base-url}")
     private String CHAT_URL;
 
     @Value("${spring.ai.openai.api-key}")
-    private String API_KEY;
+    private String API_KEY_1;
+
+    @Value("${spring.ai.openai.extend-key.key-2}")
+    private String API_KEY_2;
+
+    @Value("${spring.ai.openai.extend-key.key-3}")
+    private String API_KEY_3;
+
+    @Value("${spring.ai.openai.extend-key.key-4}")
+    private String API_KEY_4;
 
     @Value("${spring.ai.openai.chat.options.temperature}")
     private double TEMPERATURE;
 
     @Bean
-    public OpenAiApi openAiApi() {
+    public OpenAiApi apiKey1() {
         return OpenAiApi.builder()
-                .apiKey(API_KEY)
+                .apiKey(API_KEY_1)
+                .baseUrl(CHAT_URL)
+                .build();
+    }
+
+    @Bean
+    public OpenAiApi apiKey2() {
+        return OpenAiApi.builder()
+                .apiKey(API_KEY_2)
+                .baseUrl(CHAT_URL)
+                .build();
+    }
+
+    @Bean
+    public OpenAiApi apiKey3() {
+        return OpenAiApi.builder()
+                .apiKey(API_KEY_3)
+                .baseUrl(CHAT_URL)
+                .build();
+    }
+
+    @Bean
+    public OpenAiApi apiKey4() {
+        return OpenAiApi.builder()
+                .apiKey(API_KEY_4)
                 .baseUrl(CHAT_URL)
                 .build();
     }
@@ -81,33 +102,7 @@ public class ChatClientConfig {
     }
 
     @Bean
-    OpenAiChatModel llama38bModel(OpenAiApi openAiApi) {
-        OpenAiChatOptions options = OpenAiChatOptions.builder()
-                .model(LLAMA3_8B)
-                .temperature(TEMPERATURE)
-                .build();
-
-        return OpenAiChatModel.builder()
-                .openAiApi(openAiApi)
-                .defaultOptions(options)
-                .build();
-    }
-
-    @Bean
-    OpenAiChatModel llama370bModel(OpenAiApi openAiApi) {
-        OpenAiChatOptions options = OpenAiChatOptions.builder()
-                .model(LLAMA3_70B)
-                .temperature(TEMPERATURE)
-                .build();
-
-        return OpenAiChatModel.builder()
-                .openAiApi(openAiApi)
-                .defaultOptions(options)
-                .build();
-    }
-
-    @Bean
-    OpenAiChatModel gptOss120bModel(OpenAiApi openAiApi) {
+    OpenAiChatModel modelKey1(@Qualifier(value = "apiKey1") OpenAiApi openAiApi) {
         OpenAiChatOptions options = OpenAiChatOptions.builder()
                 .model(GPT_OSS_120B)
                 .temperature(TEMPERATURE)
@@ -120,9 +115,9 @@ public class ChatClientConfig {
     }
 
     @Bean
-    OpenAiChatModel gptOss20bModel(OpenAiApi openAiApi) {
+    OpenAiChatModel modelKey2(@Qualifier(value = "apiKey2") OpenAiApi openAiApi) {
         OpenAiChatOptions options = OpenAiChatOptions.builder()
-                .model(GPT_OSS_20B)
+                .model(GPT_OSS_120B)
                 .temperature(TEMPERATURE)
                 .build();
 
@@ -133,9 +128,9 @@ public class ChatClientConfig {
     }
 
     @Bean
-    OpenAiChatModel llama417bModel(OpenAiApi openAiApi) {
+    OpenAiChatModel modelKey3(@Qualifier(value = "apiKey3") OpenAiApi openAiApi) {
         OpenAiChatOptions options = OpenAiChatOptions.builder()
-                .model(LLAMA4_17B)
+                .model(GPT_OSS_120B)
                 .temperature(TEMPERATURE)
                 .build();
 
@@ -146,7 +141,20 @@ public class ChatClientConfig {
     }
 
     @Bean
-    public ChatClient LLAMA3_8B(VectorStore vectorStore, @Qualifier(value = "llama38bModel") OpenAiChatModel model, ChatMemory chatMemory) {
+    OpenAiChatModel modelKey4(@Qualifier(value = "apiKey4") OpenAiApi openAiApi) {
+        OpenAiChatOptions options = OpenAiChatOptions.builder()
+                .model(GPT_OSS_120B)
+                .temperature(TEMPERATURE)
+                .build();
+
+        return OpenAiChatModel.builder()
+                .openAiApi(openAiApi)
+                .defaultOptions(options)
+                .build();
+    }
+
+    @Bean
+    public ChatClient CLIENT_KEY_1(VectorStore vectorStore, @Qualifier(value = "modelKey1") OpenAiChatModel model, ChatMemory chatMemory) {
         return ChatClient.builder(model)
                 .defaultAdvisors(QuestionAnswerAdvisor.builder(vectorStore).build())
                 .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
@@ -154,7 +162,7 @@ public class ChatClientConfig {
     }
 
     @Bean
-    public ChatClient LLAMA3_70B(VectorStore vectorStore, @Qualifier(value = "llama370bModel") OpenAiChatModel model, ChatMemory chatMemory) {
+    public ChatClient CLIENT_KEY_2(VectorStore vectorStore, @Qualifier(value = "modelKey2") OpenAiChatModel model, ChatMemory chatMemory) {
         return ChatClient.builder(model)
                 .defaultAdvisors(QuestionAnswerAdvisor.builder(vectorStore).build())
                 .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
@@ -162,7 +170,7 @@ public class ChatClientConfig {
     }
 
     @Bean
-    public ChatClient GPT_OSS_120B(VectorStore vectorStore, @Qualifier(value = "gptOss120bModel") OpenAiChatModel model, ChatMemory chatMemory) {
+    public ChatClient CLIENT_KEY_3(VectorStore vectorStore, @Qualifier(value = "modelKey3") OpenAiChatModel model, ChatMemory chatMemory) {
         return ChatClient.builder(model)
                 .defaultAdvisors(QuestionAnswerAdvisor.builder(vectorStore).build())
                 .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
@@ -170,15 +178,7 @@ public class ChatClientConfig {
     }
 
     @Bean
-    public ChatClient GPT_OSS_20B(VectorStore vectorStore, @Qualifier(value = "gptOss20bModel") OpenAiChatModel model, ChatMemory chatMemory) {
-        return ChatClient.builder(model)
-                .defaultAdvisors(QuestionAnswerAdvisor.builder(vectorStore).build())
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
-                .build();
-    }
-
-    @Bean
-    public ChatClient LLAMA4_17B(VectorStore vectorStore, @Qualifier(value = "llama417bModel") OpenAiChatModel model, ChatMemory chatMemory) {
+    public ChatClient CLIENT_KEY_4(VectorStore vectorStore, @Qualifier(value = "modelKey4") OpenAiChatModel model, ChatMemory chatMemory) {
         return ChatClient.builder(model)
                 .defaultAdvisors(QuestionAnswerAdvisor.builder(vectorStore).build())
                 .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())

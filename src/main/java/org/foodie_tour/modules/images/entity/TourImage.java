@@ -2,8 +2,10 @@ package org.foodie_tour.modules.images.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import org.foodie_tour.modules.images.enums.TourImageStatus;
 import org.foodie_tour.modules.tours.entity.Tour;
@@ -11,7 +13,9 @@ import org.foodie_tour.modules.tours.entity.Tour;
 import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString(exclude = { "image", "tour" })
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "tour_images")

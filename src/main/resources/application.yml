@@ -12,7 +12,11 @@ spring:
   ai:
     openai:
       base-url: ${CHAT_URL}
-      api-key: ${CHAT_KEY}
+      api-key: ${CHAT_KEY_1}
+      extend-key:
+        key-2: ${CHAT_KEY_2}
+        key-3: ${CHAT_KEY_3}
+        key-4: ${CHAT_KEY_4}
       embedding:
         base-url: ${EMBEDDING_URL}
         api-key: ${EMBEDDING_KEY}
@@ -20,12 +24,7 @@ spring:
           model: ${EMBEDDING_MODEL}
       chat:
         options:
-          model:
-            custom-1: ${CHAT_MODEL_1}
-            custom-2: ${CHAT_MODEL_2}
-            custom-3: ${CHAT_MODEL_3}
-            custom-4: ${CHAT_MODEL_4}
-            custom-5: ${CHAT_MODEL_5}
+          model: ${CHAT_MODEL}
           temperature: 0.7
     retry:
       max-attempts: 10

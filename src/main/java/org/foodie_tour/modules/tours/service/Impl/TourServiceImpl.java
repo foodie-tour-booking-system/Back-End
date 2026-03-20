@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.foodie_tour.common.exception.DuplicateResourceException;
 import org.foodie_tour.common.exception.InvalidateDataException;
 import org.foodie_tour.common.exception.ResourceNotFoundException;
+import org.foodie_tour.common.rag.RagUtils;
 import org.foodie_tour.modules.tours.dto.request.TourRequest;
 import org.foodie_tour.modules.tours.dto.response.TourResponse;
 import org.foodie_tour.modules.tours.entity.Tour;
@@ -12,6 +13,7 @@ import org.foodie_tour.modules.tours.mapper.TourMapper;
 import org.foodie_tour.modules.tours.repository.TourRepository;
 import org.foodie_tour.modules.tours.service.TourService;
 import org.foodie_tour.modules.tours.specification.TourSpecifications;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -26,6 +28,8 @@ import java.util.List;
 public class TourServiceImpl implements TourService {
     private final TourRepository tourRepository;
     private final TourMapper tourMapper;
+    private final RagUtils ragUtils;
+    private final VectorStore vectorStore;
 
     @Override
     @Transactional
@@ -44,6 +48,9 @@ public class TourServiceImpl implements TourService {
 
         Tour tour = tourMapper.toEntity(tourRequest);
         tour = tourRepository.save(tour);
+
+        ragUtils.updateVectorTour(tour);
+
         return tourMapper.toResponse(tour);
     }
 
@@ -86,6 +93,9 @@ public class TourServiceImpl implements TourService {
         tourMapper.updateEntity(tourRequest, tour);
         tour.setUpdatedAt(LocalDateTime.now());
         tour = tourRepository.save(tour);
+
+        ragUtils.updateVectorTour(tour);
+
         return tourMapper.toResponse(tour);
     }
 
@@ -95,6 +105,8 @@ public class TourServiceImpl implements TourService {
                 .orElseThrow(() -> new ResourceNotFoundException("Tour không tồn tại"));
         tour.setTourStatus(TourStatus.DELETED);
         tourRepository.save(tour);
+
+        vectorStore.delete(List.of(tour.getVectorId()));
 
     }
 
