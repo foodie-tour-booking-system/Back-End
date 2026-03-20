@@ -6,47 +6,47 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class MailSampleText {
-    public static String CREATE_EMPLOYEE_TITLE = "[Felixiter Travel] - Tài khoản nhân viên đã được tạo";
+    public static String CREATE_EMPLOYEE_TITLE = "[Felixiter Travel] - Employee account created";
     public static String CREATE_EMPLOYEE_CONTENT = """
-    Xin chào,
+    Hi,
 
-    Tài khoản của bạn đã được tạo thành công, sử dụng thông tin cung cấp như bên dưới để đăng nhập vào hệ thống:
+    Your employee account has been created successfully. Please use the details below to log in to the system:
 
     Email: %s
 
-    Mật khẩu: %s
+    Password: %s
 
-    — Đội ngũ Felixiter Travel
+    — Felixiter Travel Team
     """;
 
-    public static String CREATE_BOOKING_TITLE = "[Felixiter Travel] - Đặt lịch thành công";
+    public static String CREATE_BOOKING_TITLE = "[Felixiter Travel] - Booking confirmed";
     public static String CREATE_BOOKING_CONTENT = """
-    Kính gửi Quý khách,
+    Dear Customer,
             
-    Felixiter Travel xin chân thành cảm ơn Quý khách đã tin tưởng và lựa chọn dịch vụ của chúng tôi.
-            
-    Chúng tôi xin xác nhận rằng yêu cầu đặt tour của Quý khách đã được thực hiện thành công. Dưới đây là thông tin chi tiết:
-            
-    Mã đặt tour: %s
-            
-    Tên khách hàng: %s
-            
-    Tên tour: %s
-            
-    Thời gian khởi hành: %s
-            
-    Số lượng khách: %s
-            
-    Tổng chi phí: %s
-            
-    Vui lòng kiểm tra lại thông tin trên. Nếu có bất kỳ sai sót hoặc cần hỗ trợ thêm, Quý khách vui lòng liên hệ với chúng tôi qua:
-            
+    Thank you for choosing Felixiter Travel. We sincerely appreciate your trust in our services.
+
+    We confirm that your tour booking request has been processed successfully. Here are the details:
+
+    Tour booking code: %s
+
+    Customer name: %s
+
+    Tour name: %s
+
+    Departure time: %s
+
+    Number of guests: %s
+
+    Total cost: %s
+
+    Please review the information above. If you have any questions or need further assistance, contact us at:
+
     Email: felixiter.travel@gmail.com
-            
-    Một lần nữa, xin cảm ơn Quý khách đã lựa chọn Felixiter Travel. Chúng tôi rất mong được đồng hành cùng Quý khách trong chuyến đi sắp tới!
-            
-    Trân trọng,
-    — Đội ngũ Felixiter Travel
+
+    Once again, thank you for choosing Felixiter Travel. We look forward to accompanying you on your upcoming trip!
+
+    Sincerely,
+    — Felixiter Travel Team
     """;
 
 }
