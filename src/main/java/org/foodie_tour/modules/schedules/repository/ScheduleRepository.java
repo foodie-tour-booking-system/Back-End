@@ -25,4 +25,5 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long>, JpaSp
 
     @Query("SELECT s FROM Schedule s WHERE s.tour.tourId = :tourId")
     List<Schedule> findAllByTourId(@Param(value = "tourId") long tourId);
+    Optional<Schedule> findByTourAndDepartureAtAndIsTemplate(Tour tour, LocalDateTime departureAt, boolean isTemplate);
 }

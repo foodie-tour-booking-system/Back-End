@@ -14,6 +14,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -51,6 +52,15 @@ public class Schedule {
 
     @Column(name = "is_template", nullable = false)
     private Boolean isTemplate = false;
+
+    @Column(name = "time")
+    private LocalTime time;
+
+    @Column(name = "start_date")
+    private java.time.LocalDate startDate;
+
+    @Column(name = "end_date")
+    private java.time.LocalDate endDate;
 
     @Column(name = "departure_at")
     private LocalDateTime departureAt;

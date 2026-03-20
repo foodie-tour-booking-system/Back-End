@@ -16,6 +16,7 @@ public interface ScheduleMapper {
     @Mapping(target = "route", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "bookings", ignore = true)
     Schedule toEntity(ScheduleRequest scheduleRequest);
 
     @Mapping(target = "tourId", source = "tour.tourId")
@@ -27,5 +28,6 @@ public interface ScheduleMapper {
     @Mapping(target = "route", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "bookings", ignore = true)
     void updateEntity(ScheduleRequest scheduleRequest, @MappingTarget Schedule schedule);
 }
