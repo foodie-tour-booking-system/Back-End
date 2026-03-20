@@ -20,8 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
-@ToString(exclude = { "schedule", "bookingLogs", "bookingTransactions" })
+@Getter
+@Setter
+@ToString(exclude = { "schedule", "route", "tour", "bookingLogs", "bookingTransactions" })
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "bookings", indexes = {

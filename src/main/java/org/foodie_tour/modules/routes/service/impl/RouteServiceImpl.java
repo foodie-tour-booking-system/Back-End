@@ -3,6 +3,7 @@ package org.foodie_tour.modules.routes.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.foodie_tour.common.exception.DuplicateResourceException;
 import org.foodie_tour.common.exception.ResourceNotFoundException;
+import org.foodie_tour.common.rag.RagUtils;
 import org.foodie_tour.modules.routes.dto.request.RouteRequest;
 import org.foodie_tour.modules.routes.dto.response.RouteResponse;
 import org.foodie_tour.modules.routes.entity.Route;
@@ -24,6 +25,7 @@ public class RouteServiceImpl implements RouteService {
     private final RouteRepository routeRepository;
     private final RouteMapper routeMapper;
     private final TourRepository tourRepository;
+    private final RagUtils ragUtils;
 
     @Override
     @Transactional
@@ -46,6 +48,9 @@ public class RouteServiceImpl implements RouteService {
             });
         }
         routeRepository.save(route);
+
+        ragUtils.updateVectorTour(tour);
+
         return routeMapper.toResponse(route);
     }
 
@@ -94,6 +99,9 @@ public class RouteServiceImpl implements RouteService {
             });
         }
         routeRepository.save(route);
+
+        ragUtils.updateVectorTour(tour);
+
         return routeMapper.toResponse(route);
     }
 
@@ -103,6 +111,9 @@ public class RouteServiceImpl implements RouteService {
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy tuyến đường"));
         route.setRouteStatus(RouteStatus.DELETED);
         routeRepository.save(route);
+
+        Tour tour = route.getTour();
+        ragUtils.updateVectorTour(tour);
     }
 
     @Override

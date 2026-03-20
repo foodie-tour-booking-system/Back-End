@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.foodie_tour.modules.routes.enums.RouteStatus;
 import org.foodie_tour.modules.schedules.entity.Schedule;
 import org.foodie_tour.modules.tours.entity.Tour;
@@ -14,7 +16,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString(exclude = { "tour", "schedules", "routeDetails" })
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "routes"

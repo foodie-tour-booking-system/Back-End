@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.foodie_tour.modules.images.entity.Image;
 import org.foodie_tour.modules.routes.enums.RouteDetailStatus;
 
@@ -13,7 +15,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString(exclude = { "route", "images" })
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "routes_details")

@@ -13,11 +13,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Getter
+@Setter
+@ToString(exclude = { "customer", "tour", "schedule", "images" })
 @Table(name = "feedback", indexes = {
         @Index(name = "idx_feedback_tour_status", columnList = "tour_id, status")
 })

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long>, JpaSpecificationExecutor<Schedule> {
@@ -21,4 +22,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long>, JpaSp
             "AND s.scheduleStatus = 'ACTIVE'")
     Optional<Schedule> findActualSchedule(@Param("tour") Tour tour,
                                           @Param("departureAt") LocalDateTime departureAt);
+
+    @Query("SELECT s FROM Schedule s WHERE s.tour.tourId = :tourId")
+    List<Schedule> findAllByTourId(@Param(value = "tourId") long tourId);
 }

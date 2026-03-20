@@ -2,8 +2,10 @@ package org.foodie_tour.modules.images.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.foodie_tour.modules.feedback.entity.Feedback;
 import org.foodie_tour.modules.images.enums.ImageStatus;
 import org.foodie_tour.modules.routes.entity.RouteDetail;
@@ -13,7 +15,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString(exclude = { "dish", "feedback", "routeDetail", "tourImages" })
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "images")
@@ -54,4 +58,4 @@ public class Image {
 
     @OneToMany(mappedBy = "image", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<TourImage> tourImages;
-}
+}

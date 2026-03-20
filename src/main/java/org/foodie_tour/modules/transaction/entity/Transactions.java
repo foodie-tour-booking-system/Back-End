@@ -14,12 +14,13 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Data
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Getter
+@Setter
+@ToString(exclude = { "booking" })
 @Table(name = "transactions", indexes = {
         @Index(name = "idx_trans_booking", columnList = "booking_id")
 })

@@ -14,9 +14,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Data
 @Builder
 @ToString(exclude = {"booking", "employee"})
+@Getter
+@Setter
 public class BookingLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

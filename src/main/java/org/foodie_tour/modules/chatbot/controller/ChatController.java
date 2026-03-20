@@ -1,5 +1,6 @@
 package org.foodie_tour.modules.chatbot.controller;
 
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -27,7 +28,7 @@ public class ChatController {
     }
 
     @PostMapping("/prompt")
-    public ResponseEntity<ChatBotResponse> chat(@RequestBody ChatBotRequest request){
+    public ResponseEntity<ChatBotResponse> chat(@RequestBody @Valid ChatBotRequest request){
         var result = chatService.chat(request);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }

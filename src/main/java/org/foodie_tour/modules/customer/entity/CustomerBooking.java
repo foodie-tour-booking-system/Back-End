@@ -2,12 +2,16 @@ package org.foodie_tour.modules.customer.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.foodie_tour.modules.booking.entity.Booking;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString(exclude = { "customer", "booking" })
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "customer_bookings")
