@@ -250,7 +250,7 @@ public class AuthServiceImpl implements AuthService {
         expiredTokenRepository.save(expiredToken);
     }
 
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 */15 * * * *")
     @Transactional
     public void autoCleanUpOtp() {
         List<String> otpList = otpCodeRepository.findAllExpiredOtp(LocalDateTime.now());
