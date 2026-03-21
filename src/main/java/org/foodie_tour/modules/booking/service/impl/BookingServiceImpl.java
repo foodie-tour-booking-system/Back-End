@@ -295,6 +295,7 @@ public class BookingServiceImpl implements BookingService {
         OtpCode otpEntity = new OtpCode();
         otpEntity.setOtpCode(otp);
         otpEntity.setToken(token);
+        otpEntity.setExpiredAt(LocalDateTime.now().plusMinutes(15));
         otpCodeRepository.save(otpEntity);
 
         // Send code to mail

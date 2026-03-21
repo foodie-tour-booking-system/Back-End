@@ -29,7 +29,6 @@ public class OtpCode {
     LocalDateTime createdAt;
 
     @Column(name = "expired_at")
-    @UpdateTimestamp
     LocalDateTime expiredAt;
 
 }
