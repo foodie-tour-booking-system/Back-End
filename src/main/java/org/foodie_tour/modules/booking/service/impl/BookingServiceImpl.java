@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.foodie_tour.common.exception.GlobalExceptionHandler;
 import org.foodie_tour.common.exception.InvalidateDataException;
 import org.foodie_tour.common.exception.ResourceNotFoundException;
 import org.foodie_tour.common.utils.MailSampleText;
@@ -341,6 +342,9 @@ public class BookingServiceImpl implements BookingService {
                 .build();
 
         relocateBookingRepository.save(entity);
+
+        updateBookingStatus(findByBookingCode(request.getBookingCode()), BookingStatus.RESCHEDULED,
+                "Đang chờ xử lý yêu cầu dời lịch trình mới");
     }
 
     @Transactional(readOnly = true)
@@ -472,6 +476,22 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingResponse completeOnTourPayment(String bookingCode, PaymentMethod method) {
         return null;
+    }
+
+    private boolean updateBookingStatus(Booking booking, BookingStatus newStatus, String description) {
+        if (booking.getBookingStatus() == newStatus) {
+            return false;
+        }
+
+        booking.setBookingStatus(newStatus);
+        BookingLog log = BookingLog.builder()
+                .booking(booking)
+                .description(description)
+                .bookingStatus(newStatus)
+                .build();
+        booking.getBookingLogs().add(log);
+        bookingRepository.save(booking);
+        return true;
     }
 }
 
