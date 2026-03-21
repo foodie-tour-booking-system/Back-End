@@ -480,6 +480,19 @@ public class BookingServiceImpl implements BookingService {
         return null;
     }
 
+    @Override
+    public List<BookingResponse> getAll(BookingStatus bookingStatus,Long scheduleId) {
+        Schedule schedule = null;
+        if (scheduleId != null) {
+            schedule = scheduleRepository.findById(scheduleId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Lịch trình không tồn tại"));
+        }
+
+        return bookingRepository.findByStatusAndSchedule(bookingStatus, schedule).stream()
+                .map(bookingMapper::toResponse)
+                .toList();
+    }
+
     private boolean updateBookingStatus(Booking booking, BookingStatus newStatus, String description) {
         if (booking.getBookingStatus() == newStatus) {
             return false;

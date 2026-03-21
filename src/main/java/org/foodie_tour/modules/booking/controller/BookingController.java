@@ -1,4 +1,5 @@
 package org.foodie_tour.modules.booking.controller;
+import org.foodie_tour.modules.booking.enums.BookingStatus;
 import org.foodie_tour.modules.tracking.TrackingService;
 import org.foodie_tour.modules.tracking.dto.TrackingResponse;
 
@@ -113,5 +114,13 @@ public class BookingController {
     @GetMapping("/{bookingCode}/tracking")
     public ResponseEntity<TrackingResponse> trackBooking(@PathVariable String bookingCode) {
         return ResponseEntity.ok(trackingService.trackBooking(bookingCode));
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<BookingResponse>> getAllBookings(
+            @RequestParam (required = false) BookingStatus bookingStatus,
+            @RequestParam (required = false) Long scheduleId
+    ) {
+        return ResponseEntity.ok(bookingService.getAll(bookingStatus, scheduleId));
     }
 }
