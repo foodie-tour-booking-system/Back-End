@@ -333,11 +333,13 @@ public class BookingServiceImpl implements BookingService {
         LocalDateTime departureTime = scheduleRepository.getDepartureTime(request.getScheduleId())
                 .orElseThrow(() -> new ResourceNotFoundException("Lịch khởi hành không tồn tại"));
 
+        LocalDateTime actual = LocalDateTime.of(request.getDate(), departureTime.toLocalTime());
+
         // Save request
         RelocateBooking entity = RelocateBooking.builder()
                 .bookingCode(request.getBookingCode())
                 .scheduleId(request.getScheduleId())
-                .departureAt(departureTime)
+                .departureAt(actual)
                 .relocateRequestStatus(RelocateRequestStatus.PENDING)
                 .build();
 
@@ -367,7 +369,9 @@ public class BookingServiceImpl implements BookingService {
         if (request.isApproved()) {
             if (scheduleRepository.existsById(scheduleId)) {
                 Schedule newSchedule = scheduleRepository.getReferenceById(scheduleId);
+                LocalDateTime departureTime = relocateBooking.getDepartureAt();
                 booking.setSchedule(newSchedule);
+                booking.setDepartureTime(departureTime);
             } else {
                 throw new ResourceNotFoundException("Lịch khởi hành không tồn tại");
             }
