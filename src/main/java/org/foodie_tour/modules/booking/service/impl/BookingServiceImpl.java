@@ -374,9 +374,11 @@ public class BookingServiceImpl implements BookingService {
 
             relocateBooking.setRelocateRequestStatus(RelocateRequestStatus.APPROVED);
 
+            updateBookingStatus(booking, BookingStatus.CONFIRMED, "Yêu cầu dời lịch trình được chấp thuận, booking trở về trạng thái đã xác nhận");
             bookingRepository.save(booking);
         } else {
             relocateBooking.setRelocateRequestStatus(RelocateRequestStatus.REJECTED);
+            updateBookingStatus(booking, BookingStatus.CONFIRMED, "Yêu cầu dời lịch trình bị từ chối, booking trở về trạng thái đã xác nhận");
         }
 
         relocateBookingRepository.save(relocateBooking);
