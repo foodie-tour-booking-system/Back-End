@@ -9,6 +9,7 @@ import org.foodie_tour.modules.tours.enums.TourStatus;
 import org.foodie_tour.modules.tours.enums.TourType;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -61,16 +62,16 @@ public class Tour {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
-    private List<Dish> dishes;
+    private List<Dish> dishes = new ArrayList<>();
 
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
-    private List<Schedule> schedules;
+    private List<Schedule> schedules = new ArrayList<>();
 
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
-    private List<Route> routes;
+    private List<Route> routes = new ArrayList<>();
 
     @OneToMany(mappedBy = "tour")
-    private List<TourImage> tourImages;
+    private List<TourImage> tourImages = new ArrayList<>();
 
     @Column(name = "vector_id")
     private String vectorId;
