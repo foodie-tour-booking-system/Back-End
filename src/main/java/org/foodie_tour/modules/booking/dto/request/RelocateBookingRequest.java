@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
+
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
@@ -14,5 +16,6 @@ public class RelocateBookingRequest {
     String bookingCode;
     String otp;
     long scheduleId;
+    LocalDate date;
 }
 

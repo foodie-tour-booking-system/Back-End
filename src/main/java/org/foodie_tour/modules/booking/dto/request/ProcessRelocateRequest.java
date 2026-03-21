@@ -12,5 +12,5 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 public class ProcessRelocateRequest {
     long relocateRequestId;
-    boolean isApproved;
+    boolean approved;
 }
