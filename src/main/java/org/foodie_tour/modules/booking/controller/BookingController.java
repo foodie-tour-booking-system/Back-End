@@ -123,4 +123,11 @@ public class BookingController {
     ) {
         return ResponseEntity.ok(bookingService.getAll(bookingStatus, scheduleId));
     }
+
+    @PostMapping("/{bookingCode}/mark-completed")
+    @PreAuthorize("hasAuthority('COMPLETE_TOUR')")
+    public ResponseEntity<String> markCompletedBooking(@PathVariable String bookingCode) {
+        bookingService.completeBooking(bookingCode);
+        return ResponseEntity.status(HttpStatus.OK).body("Hoàn tất booking ");
+    }
 }

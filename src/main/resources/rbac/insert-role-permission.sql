@@ -22,7 +22,7 @@ WHERE r.name = 'DISPATCH'
                  'CREATE_ROUTE', 'UPDATE_ROUTE',
                  'CREATE_SCHEDULE', 'UPDATE_SCHEDULE', 'DELETE_SCHEDULE',
                  'CREATE_DISH', 'UPDATE_DISH', 'DELETE_DISH',
-                 'VIEW_EMPLOYEE', 'VERIFY_PASSWORD', 'UPDATE_PASSWORD'
+                 'VIEW_EMPLOYEE', 'VERIFY_PASSWORD', 'UPDATE_PASSWORD', 'COMPLETE_TOUR'
     );
 
 -- ==========================================
@@ -35,7 +35,7 @@ WHERE r.name = 'TOURGUIDE'
   AND p.name IN (
                  'VIEW_TOUR',
                  'VIEW_EMPLOYEE',
-                 'VERIFY_PASSWORD', 'UPDATE_PASSWORD'
+                 'VERIFY_PASSWORD', 'UPDATE_PASSWORD', 'COMPLETE_TOUR'
     );
 
 -- ==========================================

@@ -39,7 +39,8 @@ FROM (VALUES
 
     ('VIEW_REPORT', 'Cho phép xem báo cáo', 'ACTIVE'),
 
-    ('PROCESS_RELOCATE_BOOKING_REQUEST', 'Cho phép xử lý yêu cầu dời tour', 'ACTIVE')
+    ('PROCESS_RELOCATE_BOOKING_REQUEST', 'Cho phép xử lý yêu cầu dời tour', 'ACTIVE'),
+    ('COMPLETE_TOUR', 'Cho phép cập nhật tour hoàn tất', 'ACTIVE')
 ) AS v(name, description, status)
 WHERE NOT EXISTS (
     SELECT 1 FROM public.permission p WHERE p.name = v.name
