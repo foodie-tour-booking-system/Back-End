@@ -22,6 +22,7 @@ public interface BookingRepository extends JpaRepository<Booking,Long>, JpaSpeci
 
     Optional<Booking> findByBookingCode(String bookingCode);
     Optional<Booking> findByEmail(String email);
+    Optional<Booking> findFirstByBookingCodeOrEmailOrPhoneOrderByCreateAtDesc(String bookingCode, String email, String phone);
 
     @Query("SELECT COUNT(b) FROM Booking b WHERE b.departureTime >= :from AND b.departureTime < :to AND b.bookingStatus = :status")
     Long findTotalBetweenAndStatus(@Param(value = "from") LocalDateTime from,

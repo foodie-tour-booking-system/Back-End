@@ -13,7 +13,7 @@ public class TrackingService {
     private final BookingRepository bookingRepository;
 
     public TrackingResponse trackBooking(String bookingCode) {
-        return bookingRepository.findByBookingCode(bookingCode)
+        return bookingRepository.findFirstByBookingCodeOrEmailOrPhoneOrderByCreateAtDesc(bookingCode, bookingCode, bookingCode)
                 .map(booking -> {
                     TrackingResponse response = new TrackingResponse();
                     response.setBookingCode(booking.getBookingCode());
