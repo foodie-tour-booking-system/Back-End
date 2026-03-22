@@ -28,4 +28,5 @@ public interface BookingService {
     String approveManualRefund(String bookingCode);
     BookingResponse completeOnTourPayment(String bookingCode, PaymentMethod method);
     List<BookingResponse> getAll(BookingStatus bookingStatus,Long scheduleId);
+    void completeBooking(String bookingCode);
 }

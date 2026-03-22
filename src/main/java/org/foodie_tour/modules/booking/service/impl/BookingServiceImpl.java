@@ -497,6 +497,32 @@ public class BookingServiceImpl implements BookingService {
                 .toList();
     }
 
+    @Transactional
+    public void completeBooking(String bookingCode) {
+        Booking booking = findByBookingCode(bookingCode);
+
+        LocalDateTime now = LocalDateTime.now();
+
+        int halfDurationMinutes = booking.getTour().getDuration() / 2;
+
+        LocalDateTime minCompleteTime = booking.getDepartureTime().plusMinutes(halfDurationMinutes);
+
+        if (now.isBefore(minCompleteTime)) {
+            throw new InvalidateDataException("Lịch trình quá sớm để hoàn tất");
+        }
+
+        boolean paymentSucceeded = booking.getBookingTransactions().stream()
+                .anyMatch(t -> t.getCashFlow() == CashFlow.INCOME && t.getStatus() == TransactionStatus.SUCCESS);
+
+        if (!paymentSucceeded) {
+            throw new InvalidateDataException("Thanh toán chưa hoàn tất, lịch trình chưa thể hoàn tất");
+        }
+
+        booking.setBookingStatus(BookingStatus.COMPLETED);
+
+        bookingRepository.save(booking);
+    }
+
     private boolean updateBookingStatus(Booking booking, BookingStatus newStatus, String description) {
         if (booking.getBookingStatus() == newStatus) {
             return false;
