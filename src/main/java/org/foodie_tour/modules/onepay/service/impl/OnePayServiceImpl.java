@@ -132,9 +132,11 @@ public class OnePayServiceImpl implements OnePayService {
             }
         }
 
+        long amountPaidInThisSession = booking.getIsDeposit() ? (long) (booking.getTotalPrice() * 0.3) : booking.getTotalPrice();
+
         Transactions transactions = Transactions.builder()
                 .booking(booking)
-                .amount(booking.getTotalPrice())
+                .amount(amountPaidInThisSession)
                 .paymentMethod(PaymentMethod.VISA)
                 .cashFlow(CashFlow.INCOME)
                 .status(isSuccess ? TransactionStatus.SUCCESS : TransactionStatus.FAILED)
@@ -144,8 +146,12 @@ public class OnePayServiceImpl implements OnePayService {
 
         if (isSuccess) {
             booking.setBookingStatus(BookingStatus.CONFIRMED);
+            booking.setAmountPaid(amountPaidInThisSession);
+            if (!booking.getIsDeposit()) {
+                booking.setRemainingAmount(0L);
+            }
             bookingRepository.save(booking);
-            createBookingLog(booking, "Thanh toán Visa thành công");
+            createBookingLog(booking, "Thanh toán Visa thành công: " + amountPaidInThisSession);
 
 
             customerBookingRepository.findByBooking(booking).ifPresent(customerBooking -> {

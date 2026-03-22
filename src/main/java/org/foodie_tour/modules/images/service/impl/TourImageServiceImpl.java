@@ -105,10 +105,8 @@ public class TourImageServiceImpl implements TourImageService {
         Tour tour = tourRepository.findById(tourId)
                 .orElseThrow(() -> new ResourceNotFoundException("Tour không tồn tại"));
 
-        // Upload lên S3
         String publicUrl = s3Service.uploadFileWithCustomPrefix(file, "tours");
 
-        // Lưu Image entity
         Image image = new Image();
         image.setImageUrl(publicUrl);
         image.setImageStatus(ImageStatus.ACTIVE);
@@ -116,12 +114,10 @@ public class TourImageServiceImpl implements TourImageService {
         image.setUpdatedAt(LocalDateTime.now());
         image = imageRepository.save(image);
 
-        // Reset primary nếu cần
         if (Boolean.TRUE.equals(isPrimary)) {
             tourImageRepository.resetPrimaryStatusByTourId(tourId);
         }
 
-        // Tạo TourImage
         TourImage tourImage = new TourImage();
         tourImage.setTour(tour);
         tourImage.setImage(image);
