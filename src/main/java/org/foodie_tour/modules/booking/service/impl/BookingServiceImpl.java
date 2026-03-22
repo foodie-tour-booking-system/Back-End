@@ -192,7 +192,7 @@ public class BookingServiceImpl implements BookingService {
             booking.setRemainingAmount(totalPrice - depositAmount);
         } else {
             booking.setAmountPaid(0L);
-            booking.setRemainingAmount(0L);
+            booking.setRemainingAmount(totalPrice);
         }
 
         if (booking.getBookingCode() == null) {
@@ -481,7 +481,35 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingResponse completeOnTourPayment(String bookingCode, PaymentMethod method) {
-        return null;
+        Booking booking = findByBookingCode(bookingCode);
+
+        if (booking.getRemainingAmount() <= 0) {
+            throw new InvalidateDataException("Đặt tour này đã thanh toán hoàn tất trước đó.");
+        }
+
+        long remaining = booking.getRemainingAmount();
+        long currentPaid = booking.getAmountPaid() != null ? booking.getAmountPaid() : 0L;
+
+        booking.setAmountPaid(currentPaid + remaining);
+        booking.setRemainingAmount(0L);
+
+        Transactions transactions = Transactions.builder()
+                .booking(booking)
+                .amount(remaining)
+                .paymentMethod(method)
+                .cashFlow(CashFlow.INCOME)
+                .status(TransactionStatus.SUCCESS)
+                .build();
+        transactionsRepository.save(transactions);
+
+        BookingLog log = BookingLog.builder()
+                .booking(booking)
+                .description("Thanh toán hoàn tất phần còn lại (" + remaining + ") bằng " + method)
+                .bookingStatus(booking.getBookingStatus())
+                .build();
+        booking.getBookingLogs().add(log);
+
+        return bookingMapper.toResponse(bookingRepository.save(booking));
     }
 
     @Override
