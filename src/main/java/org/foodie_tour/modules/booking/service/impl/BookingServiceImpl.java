@@ -62,6 +62,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -402,12 +403,16 @@ public class BookingServiceImpl implements BookingService {
         int allowHours = Integer.parseInt(
                 systemConfigRepository.findById("CANCEL_ALLOW_HOURS")
                         .map(SystemConfig::getConfigValue)
-                        .orElse("8")
+                        .orElse("24")
         );
 
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime departureTime = booking.getSchedule().getDepartureAt();
-        boolean isEligibleForRefund = now.plusHours(allowHours).isBefore(departureTime);
+//        LocalDateTime departureTime = Optional.ofNullable(booking.getSchedule())
+//                .map(s -> s.getDepartureAt())
+//                .orElse(null);
+        LocalDateTime departureTime = booking.getDepartureTime();
+        boolean isEligibleForRefund = departureTime == null
+                || now.plusHours(allowHours).isBefore(departureTime);
 
         booking.setBookingStatus(BookingStatus.CANCELLED);
         booking.setCancellationReason(request.getCancellationReason());
@@ -428,7 +433,7 @@ public class BookingServiceImpl implements BookingService {
             }
             refundNote = " Tiền đã được hoàn về ví của bạn. ";
         } else {
-            booking.setBookingStatus(BookingStatus.PENDING);
+            booking.setBookingStatus(BookingStatus.REQUESTED_CANCELLATION);
             refundNote = " Tuy nhiên vì sát giờ khởi hành, yêu cầu hoàn tiền của bạn đang chờ bộ phận phê duyệt. ";
         }
 
@@ -466,6 +471,7 @@ public class BookingServiceImpl implements BookingService {
                 .build();
         transactionsRepository.save(refundTrans);
         booking.setRefundStatus(RefundStatus.COMPLETED);
+        booking.setBookingStatus(BookingStatus.CANCELLED);
 
         BookingLog log = BookingLog.builder()
                 .booking(booking)
