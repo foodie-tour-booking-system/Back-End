@@ -70,9 +70,8 @@ public class EmployeeController {
 
     @PostMapping("/verify-password")
     @PreAuthorize("hasAuthority('VERIFY_PASSWORD')")
-    public ResponseEntity<String> verifyCurrentPassword(@Valid @RequestBody VerifyPasswordRequest request,
-                                                        @RequestParam(value = "scope") TokenScope scope) {
-        return ResponseEntity.status(HttpStatus.OK).body(authService.verifyCurrentPassword(request, scope, 5));
+    public ResponseEntity<String> verifyCurrentPassword(@Valid @RequestBody VerifyPasswordRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(authService.verifyCurrentPassword(request, TokenScope.CHANGE_PASSWORD, 5));
     }
 
     @PatchMapping("/update-password")
